@@ -8,14 +8,15 @@ export default function Login() {
     console.log("Hitting login route!");
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     console.log("logging in...");
-    const loginInfo = fetch("/api/login", {
+    const loginInfo = await fetch("/api/login", {
       method: "POST",
-      headers: { "content-type": "application/json" },
-      body: { username, password },
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
     });
+    console.log(await loginInfo.json());
   };
 
   return (
@@ -26,6 +27,7 @@ export default function Login() {
           <input
             value={username}
             id="username"
+            type="text"
             onChange={(e) => setUsername(e.target.value)}
           />
         </p>
@@ -34,6 +36,7 @@ export default function Login() {
           <input
             value={password}
             id="password"
+            type="password"
             onChange={(e) => setPassword(e.target.value)}
           />
         </p>
