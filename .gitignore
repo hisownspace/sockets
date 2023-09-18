@@ -1,0 +1,4 @@
+instance/*
+.env
+.venv
+react-app/node_modules
