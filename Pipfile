@@ -12,6 +12,7 @@ alembic = "*"
 wtforms = "*"
 flask-wtf = "*"
 flask-login = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
