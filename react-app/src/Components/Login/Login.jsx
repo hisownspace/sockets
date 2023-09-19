@@ -38,6 +38,7 @@ export default function Login() {
     if (res.ok) {
       const user = await res.json();
       setSession(user);
+      navigate("/1");
     } else {
       const errors = await res.json();
       console.log(errors);
@@ -46,7 +47,11 @@ export default function Login() {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    setSession({});
+    (async () => {
+      await fetch("/api/logout");
+      setSession({});
+      navigate("/");
+    })();
   };
 
   return session.username ? (

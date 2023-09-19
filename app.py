@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_wtf.csrf import generate_csrf
 from config import Config
 from models import db, User, Message, Room
@@ -19,9 +19,16 @@ login_manager.init_app(app)
 app.cli.add_command(seed_commands)
 
 
-@app.route("/")
-def test():
-    return "App Deployed"
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
+
+@app.route("/api/auth")
+def authenticate():
+    if current_user.is_authenticated:
+        return current_user.to_dict(), 200
+    return {"errors": "Unauthorized"}, 401
 
 
 @app.route("/api/login", methods=["GET", "POST"])
@@ -36,6 +43,12 @@ def login():
         login_user(user)
         return user.to_dict()
     return form.errors, 401
+
+
+@app.route("/api/logout")
+def logout():
+    logout_user()
+    return {"Message": "Logout Successful!"}
 
 
 @app.route("/api/users")
