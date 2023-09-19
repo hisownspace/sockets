@@ -1,8 +1,23 @@
 from sqlalchemy.sql import text
 from flask.cli import AppGroup
-from models import db, User
+from models import db, User, Room
 
 seed_commands = AppGroup("seed")
+
+
+def seed_rooms():
+    room_1 = Room(name="Serenity")
+    room_2 = Room(name="Miranda")
+    room_3 = Room(name="Persephone")
+    db.session.add(room_1)
+    db.session.add(room_2)
+    db.session.add(room_3)
+    db.session.commit()
+
+
+def undo_rooms():
+    db.session.execute(text("DELETE FROM rooms;"))
+    db.session.commit()
 
 
 def seed_users():
