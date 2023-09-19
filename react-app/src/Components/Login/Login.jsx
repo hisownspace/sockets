@@ -10,8 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState("password");
 
   useEffect(() => {
-    console.log("Hitting login route!");
-    (async function () {
+    (async () => {
       const res = await fetch("/api/users");
       if (res.ok) {
         const users = await res.json();
@@ -29,7 +28,6 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("logging in...");
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -37,9 +35,10 @@ export default function Login() {
     });
     if (res.ok) {
       const user = await res.json();
-      console.log(user);
       setSession(user);
     } else {
+      const errors = await res.json();
+      console.log(errors);
     }
   };
 

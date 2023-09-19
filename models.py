@@ -43,8 +43,11 @@ class Message(db.Model):
     __tablename__ = "messages"
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(2000))
+    channel_id = db.Column(db.Integer, db.ForeignKey("rooms.id"))
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
+
+    room = db.relationship("Room", back_populates="messages")
 
     def to_dict(self):
         return {
@@ -53,3 +56,11 @@ class Message(db.Model):
             "created_at": self.created_at,
             "updated_at": self.updated_at,
         }
+
+
+class Room(db.Model):
+    __tablename__ = "rooms"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+
+    messages = db.relationship("Message", back_populates="room")

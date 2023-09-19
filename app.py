@@ -28,13 +28,21 @@ def test():
 def login():
     form = LoginForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
+    print(form.data)
     if form.validate_on_submit():
         username = form.data["username"]
         print(username)
         user = User.query.filter_by(username=username).first()
         login_user(user)
-        return {"message": "Login Successful!"}
-    return form.errors
+        return {"user": user.to_dict()}
+    return form.errors, 401
+
+
+@app.route("/api/users")
+def get_all_users():
+    all_users = User.query.all()
+    print(all_users)
+    return [user.to_dict() for user in all_users], 200
 
 
 @app.after_request
