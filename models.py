@@ -64,3 +64,6 @@ class Room(db.Model):
     name = db.Column(db.String(255), nullable=False)
 
     messages = db.relationship("Message", back_populates="room")
+
+    def to_dict(self):
+        return {"id": self.id, "name": self.name, "messages": self.messages}

@@ -1,0 +1,12 @@
+.chat-container {
+  display: flex;
+  padding-top: 20px;
+}
+
+.chat-sidebar {
+  width: 175px;
+}
+
+.room-list-item {
+  list-style-type: none;
+}

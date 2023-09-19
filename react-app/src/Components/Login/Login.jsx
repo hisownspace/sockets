@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { SessionContext } from "../../context/session";
+import { useNavigate } from "react-router";
 
 export default function Login() {
+  const navigate = useNavigate();
   const { session, setSession } = useContext(SessionContext);
   const [currentUser, setCurrentUser] = useState();
   const [allUsers, setAllUsers] = useState([]);
@@ -48,16 +50,17 @@ export default function Login() {
 
   return session ? (
     <div className="logout-container">
-      <p>Hello {session?.user?.username}!</p>
-      <form onSubmit={handleLogout}>
-        <button>Logout</button>
-      </form>
+      <div>
+        <p>Hello {session?.user?.username}!</p>
+        <form onSubmit={handleLogout}>
+          <button>Logout</button>
+        </form>
+      </div>
     </div>
   ) : (
     <div className="login-container">
       <form onSubmit={handleLogin} className="login-form">
         <p>
-          <label htmlFor="username">Username: </label>
           <select
             value={username}
             onChange={(e) => setUsername(e.target.value)}

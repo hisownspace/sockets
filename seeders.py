@@ -51,8 +51,10 @@ def undo_users():
 @seed_commands.command("all")
 def seed_all():
     seed_users()
+    seed_rooms()
 
 
 @seed_commands.command("undo")
 def undo_all():
     undo_users()
+    undo_rooms()

@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager, login_user
 from flask_wtf.csrf import generate_csrf
 from config import Config
-from models import db, User, Message
+from models import db, User, Message, Room
 from forms import LoginForm
 from seeders import seed_commands
 
@@ -43,6 +43,18 @@ def get_all_users():
     all_users = User.query.all()
     print(all_users)
     return [user.to_dict() for user in all_users], 200
+
+
+@app.route("/api/rooms")
+def get_all_rooms():
+    all_rooms = Room.query.all()
+    return [room.to_dict() for room in all_rooms], 200
+
+
+@app.route("/api/rooms/<int:roomId>")
+def get_single_room(roomId):
+    room = Room.query.get(roomId)
+    return room.to_dict(), 200
 
 
 @app.after_request
