@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { SessionContext } from "../../context/session";
 
 export default function Room() {
+  const { session } = useContext(SessionContext);
   const { roomId } = useParams();
   const [roomName, setRoomName] = useState("");
 
@@ -18,6 +20,10 @@ export default function Room() {
       }
     })();
   }, [roomId]);
+
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
 
   return (
     <div className="chat-room-container">

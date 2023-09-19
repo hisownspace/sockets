@@ -44,16 +44,17 @@ export default function Login() {
     }
   };
 
-  const handleLogout = () => {
-    setSession();
+  const handleLogout = (e) => {
+    e.preventDefault();
+    setSession({});
   };
 
-  return session ? (
+  return session.username ? (
     <div className="logout-container">
       <div>
-        <p>Hello {session?.user?.username}!</p>
+        <p>Hello {session.username}!</p>
         <form onSubmit={handleLogout}>
-          <button>Logout</button>
+          <button>Log Out</button>
         </form>
       </div>
     </div>
@@ -70,7 +71,7 @@ export default function Login() {
             ))}
           </select>
         </p>
-        <button>Submit</button>
+        <button>Log In</button>
       </form>
     </div>
   );

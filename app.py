@@ -34,7 +34,7 @@ def login():
         print(username)
         user = User.query.filter_by(username=username).first()
         login_user(user)
-        return {"user": user.to_dict()}
+        return user.to_dict()
     return form.errors, 401
 
 
