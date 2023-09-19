@@ -1,44 +1,72 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { SessionContext } from "../../context/session";
 
 export default function Login() {
+  const { session, setSession } = useContext(SessionContext);
+  const [currentUser, setCurrentUser] = useState();
+  const [allUsers, setAllUsers] = useState([]);
+  const [errors, setErrors] = useState({});
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("password");
 
   useEffect(() => {
     console.log("Hitting login route!");
+    (async function () {
+      const res = await fetch("/api/users");
+      if (res.ok) {
+        const users = await res.json();
+        setAllUsers(users);
+      } else {
+        const errors = await res.json();
+        console.log(errors);
+      }
+    })();
   }, []);
+
+  useEffect(() => {
+    setUsername(allUsers[0]?.username);
+  }, [allUsers]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     console.log("logging in...");
-    const loginInfo = await fetch("/api/login", {
+    const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
-    console.log(await loginInfo.json());
+    if (res.ok) {
+      const user = await res.json();
+      console.log(user);
+      setSession(user);
+    } else {
+    }
   };
 
-  return (
+  const handleLogout = () => {
+    setSession();
+  };
+
+  return session ? (
+    <div className="logout-container">
+      <p>Hello {session?.user?.username}!</p>
+      <form onSubmit={handleLogout}>
+        <button>Logout</button>
+      </form>
+    </div>
+  ) : (
     <div className="login-container">
       <form onSubmit={handleLogin} className="login-form">
         <p>
           <label htmlFor="username">Username: </label>
-          <input
+          <select
             value={username}
-            id="username"
-            type="text"
             onChange={(e) => setUsername(e.target.value)}
-          />
-        </p>
-        <p>
-          <label htmlFor="password">Password: </label>
-          <input
-            value={password}
-            id="password"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          >
+            {allUsers.map((user) => (
+              <option key={user.id}>{user.username}</option>
+            ))}
+          </select>
         </p>
         <button>Submit</button>
       </form>
