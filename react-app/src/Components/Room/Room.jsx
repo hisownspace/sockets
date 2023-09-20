@@ -28,7 +28,7 @@ export default function Room() {
         console.log(errors);
       }
     })();
-    socket = io("ws://127.0.0.1:5000", {
+    socket = io("http://127.0.0.1:5000", {
       transports: ["polling", "websocket"],
     });
     console.log("in socket useEffect");
