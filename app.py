@@ -5,12 +5,14 @@ from flask_wtf.csrf import generate_csrf
 from config import Config
 from models import db, User, Message, Room
 from forms import LoginForm
+from sockets import socketio
 from seeders import seed_commands
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 Migrate(app, db)
+socketio.init_app(app)
 
 login_manager = LoginManager()
 
@@ -83,4 +85,4 @@ def inject_csrf_token(response):
 
 
 if __name__ == "__main__":
-    app.run("127.0.0.1", 5000)
+    socketio.run(app)

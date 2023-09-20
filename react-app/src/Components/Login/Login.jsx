@@ -48,9 +48,11 @@ export default function Login() {
   const handleLogout = (e) => {
     e.preventDefault();
     (async () => {
-      await fetch("/api/logout");
-      setSession({});
-      navigate("/");
+      const res = await fetch("/api/logout");
+      if (res.ok) {
+        setSession({});
+        navigate("/");
+      }
     })();
   };
 
