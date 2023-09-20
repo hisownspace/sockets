@@ -59,7 +59,7 @@ export default function Login() {
   return session.username ? (
     <div className="logout-container">
       <div>
-        <p>Hello {session.username}!</p>
+        <div className="user-greeting">Hello {session.username}!</div>
         <form onSubmit={handleLogout}>
           <button>Log Out</button>
         </form>

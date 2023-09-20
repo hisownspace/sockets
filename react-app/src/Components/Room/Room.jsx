@@ -32,7 +32,7 @@ export default function Room() {
     socket.emit("join", roomId);
 
     // callback to check the connection type
-    socket.on("connect", (socketio) => {
+    socket.on("connect", () => {
       const transport = socket.io.engine.transport.name;
       console.log(transport);
       const connected = socket.connected;
@@ -77,9 +77,19 @@ export default function Room() {
       <div className="message-container">
         {messages.map((message, idx) => (
           <div key={idx} className="chat-message">
+            {message.new_day ? (
+              <div className="new-day-container">
+                <span>{message.new_day}</span>
+              </div>
+            ) : null}
             <div className="message-content">{message.content}</div>
             <div className="message-user">
-              <span>{message.user}</span>
+              <span>
+                <span style={{ color: message.user.theme }}>
+                  {message.user.username}
+                </span>
+                <span className="timestamp">{message.created_at}</span>
+              </span>
             </div>
           </div>
         ))}

@@ -9,3 +9,9 @@
   flex-direction: row-reverse;
   height: 20px;
 }
+
+.user-greeting {
+  padding-right: 20px;
+  margin-bottom: 5px;
+  text-align: right;
+}

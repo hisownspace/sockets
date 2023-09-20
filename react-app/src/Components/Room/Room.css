@@ -3,11 +3,11 @@
 }
 
 .message-user {
-  margin-right: 0;
-  font-size: 12px;
+  /* margin-right: 0; */
+  font-size: 1em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  line-height: 0.1em;
-  width: 70vw;
+  line-height: 0;
+  width: 75vw;
   text-align: right;
   margin: 10px 0 20px -40px;
   padding-right: 20px;
@@ -16,9 +16,47 @@
 .message-content {
   width: 100%;
   display: inline;
+  font-size: 1.25em;
 }
 
 .message-user span {
   background-color: #242424;
-  padding: 0 10px;
+  padding: 0 2px;
+}
+
+.timestamp {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75em;
+}
+
+.new-day-container span {
+  padding: 3px 10px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background-color: #242424;
+  border-radius: 100px;
+}
+
+.new-day-container {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  line-height: 0;
+  text-align: center;
+  width: 76vw;
+  margin: 10px 0 20px -45px;
+  padding-right: 20px;
+}
+
+input {
+  width: 90%;
+}
+
+.message-input {
+  position: fixed;
+  bottom: 25px;
+  width: 75vw;
+}
+
+.message-form {
+  display: flex;
+  margin-left: 0;
 }

@@ -21,15 +21,15 @@ def undo_rooms():
 
 
 def seed_users():
-    user_1 = User(username="Mal", password="password")
-    user_2 = User(username="Zoe", password="password")
-    user_3 = User(username="Wash", password="password")
-    user_4 = User(username="Inara", password="password")
-    user_5 = User(username="Jayne", password="password")
-    user_6 = User(username="River", password="password")
-    user_7 = User(username="Kaylee", password="password")
-    user_8 = User(username="Simon", password="password")
-    user_9 = User(username="Book", password="password")
+    user_1 = User(username="Mal", password="password", theme="#7B6859")
+    user_2 = User(username="Zoe", password="password", theme="#ACACA2")
+    user_3 = User(username="Wash", password="password", theme="#C8A680")
+    user_4 = User(username="Inara", password="password", theme="#457E89")
+    user_5 = User(username="Jayne", password="password", theme="#E76D2D")
+    user_6 = User(username="River", password="password", theme="#969249")
+    user_7 = User(username="Kaylee", password="password", theme="#A7AF9D")
+    user_8 = User(username="Simon", password="password", theme="#6A9DA1")
+    user_9 = User(username="Book", password="password", theme="#7B6859")
 
     db.session.add(user_1)
     db.session.add(user_2)
@@ -48,6 +48,11 @@ def undo_users():
     db.session.commit()
 
 
+def undo_messages():
+    db.session.execute(text("DELETE FROM messages;"))
+    db.session.commit()
+
+
 @seed_commands.command("all")
 def seed_all():
     seed_users()
@@ -58,3 +63,4 @@ def seed_all():
 def undo_all():
     undo_users()
     undo_rooms()
+    undo_messages()
