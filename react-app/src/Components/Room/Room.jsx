@@ -13,6 +13,10 @@ export default function Room() {
   const [roomName, setRoomName] = useState("");
 
   useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
+  useEffect(() => {
     (async () => {
       const res = await fetch(`/api/rooms/${roomId}`);
       if (res.ok) {
@@ -73,32 +77,36 @@ export default function Room() {
 
   return (
     <div className="chat-room-container">
-      <h1>Welcome to {roomName}!</h1>
-      <div className="message-container">
-        {messages.map((message, idx) => (
-          <div key={idx} className="chat-message">
-            {message.new_day ? (
-              <div className="new-day-container">
-                <span>{message.new_day}</span>
-              </div>
-            ) : null}
-            <div className="message-content">{message.content}</div>
-            <div className="message-user">
-              <span>
-                <span style={{ color: message.user.theme }}>
-                  {message.user.username}
+      <div>
+        <div className="room-greeting">
+          <h1>Welcome to {roomName}!</h1>
+        </div>
+        <div className="message-container">
+          {messages.map((message, idx) => (
+            <div key={idx} className="chat-message">
+              {message.new_day ? (
+                <div className="new-day-container">
+                  <span>{message.new_day}</span>
+                </div>
+              ) : null}
+              <div className="message-content">{message.content}</div>
+              <div className="message-user">
+                <span>
+                  <span style={{ color: message.user.theme }}>
+                    {message.user.username}
+                  </span>
+                  <span className="timestamp">{message.created_at}</span>
                 </span>
-                <span className="timestamp">{message.created_at}</span>
-              </span>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="message-input">
-        <form className="message-form" onSubmit={sendMessage}>
-          <input value={messageInput} onChange={updateMessageInput} />
-          <button type="submit">Send</button>
-        </form>
+          ))}
+        </div>
+        <div className="message-input">
+          <form className="message-form" onSubmit={sendMessage}>
+            <input value={messageInput} onChange={updateMessageInput} />
+            <button type="submit">Send</button>
+          </form>
+        </div>
       </div>
     </div>
   );

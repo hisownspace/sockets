@@ -1,3 +1,4 @@
+from pprint import pprint
 from datetime import datetime
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
@@ -69,7 +70,7 @@ class Message(db.Model):
     room = db.relationship("Room", back_populates="messages")
     user = db.relationship("User")
 
-    def to_dict(self):
+    def to_dict(self, from_room=False):
         return {
             "id": self.id,
             "content": self.content,
@@ -77,7 +78,9 @@ class Message(db.Model):
             # "created_at": self.created_at.strftime("%a, %b %-d% at %-I:%M %p")
             # if self.created_at.date() != datetime.today().date()
             # else self.created_at.strftime("%-I:%M %p"),
-            "created_at": self.created_at,
+            "created_at": self.created_at
+            if from_room
+            else self.created_at.strftime("%-I:%M %p"),
             "updated_at": str(self.updated_at),
         }
 
@@ -91,34 +94,33 @@ class Room(db.Model):
 
     def to_dict(self):
         messages = [message for message in self.messages]
-        message_dicts = [None for _ in messages]
+        message_dicts = [{"new_day": None} for _ in messages]
         for idx in range(len(messages)):
-            msg_dict = messages[idx].to_dict()
-            if message_dicts[idx]:
-                msg_dict["new_day"] = message_dicts[idx]["new_day"]
-            else:
-                msg_dict["new_day"] = msg_dict["created_at"].strftime("%A, %B %-d")
-            if idx + 1 < len(messages):
-                next_msg_dict = messages[idx + 1].to_dict()
-                if msg_dict["created_at"].date() != next_msg_dict["created_at"].date():
-                    if next_msg_dict["created_at"].date() == datetime.today().date():
-                        next_msg_dict["new_day"] = "Today"
-                    else:
-                        next_msg_dict["new_day"] = next_msg_dict["created_at"].strftime(
-                            "%A, %B %-d"
-                        )
-                    for num in suffixes.keys():
-                        if msg_dict["new_day"].endswith(str(num)):
-                            msg_dict["new_day"] += suffixes[num]
-                            break
-                    for num in suffixes.keys():
-                        if next_msg_dict["new_day"].endswith(str(num)):
-                            next_msg_dict["new_day"] += suffixes[num]
-                            break
-                message_dicts[idx + 1] = next_msg_dict
-            msg_dict["created_at"] = msg_dict["created_at"].strftime("%-I:%M %p")
-            message_dicts[idx] = msg_dict
-        print(message_dicts)
+            this_message = messages[idx].to_dict(from_room=True)
+            if idx == 0:
+                message_dicts[idx] = this_message
+                message_dicts[idx]["new_day"] = this_message["created_at"].strftime(
+                    "%A, %B %-d"
+                )
+            if (
+                idx + 1 < len(messages)
+                and messages[idx].to_dict(from_room=True)["created_at"].date()
+                != messages[idx + 1].to_dict(from_room=True)["created_at"].date()
+            ):
+                next_message = messages[idx + 1].to_dict(from_room=True)
+                message_dicts[idx + 1] = next_message
+                if next_message["created_at"].date() == datetime.today().date():
+                    message_dicts[idx + 1]["new_day"] = "Today"
+                else:
+                    message_dicts[idx + 1]["new_day"] = next_message[
+                        "created_at"
+                    ].strftime("%A, %B %-d")
+            elif idx + 1 < len(messages):
+                message_dicts[idx + 1] = messages[idx + 1].to_dict(from_room=True)
+            message_dicts[idx]["created_at"] = message_dicts[idx][
+                "created_at"
+            ].strftime("%-I:%M %p")
+        pprint(message_dicts)
 
         return {
             "id": self.id,
