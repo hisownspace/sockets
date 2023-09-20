@@ -69,6 +69,7 @@ def get_all_rooms():
 @app.route("/api/rooms/<int:roomId>")
 def get_single_room(roomId):
     room = Room.query.get(roomId)
+    print(room)
     return room.to_dict(), 200
 
 

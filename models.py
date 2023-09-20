@@ -44,17 +44,20 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(2000))
     channel_id = db.Column(db.Integer, db.ForeignKey("rooms.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     created_at = db.Column(db.DateTime, default=datetime.now())
     updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
 
     room = db.relationship("Room", back_populates="messages")
+    user = db.relationship("User")
 
     def to_dict(self):
         return {
             "id": self.id,
             "content": self.content,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
+            "user": self.user.username,
+            "created_at": str(self.created_at),
+            "updated_at": str(self.updated_at),
         }
 
 
@@ -66,4 +69,8 @@ class Room(db.Model):
     messages = db.relationship("Message", back_populates="room")
 
     def to_dict(self):
-        return {"id": self.id, "name": self.name, "messages": self.messages}
+        return {
+            "id": self.id,
+            "name": self.name,
+            "messages": [message.to_dict() for message in self.messages],
+        }

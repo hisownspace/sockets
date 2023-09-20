@@ -18,25 +18,31 @@ export default function Room() {
       if (res.ok) {
         const data = await res.json();
         setRoomName(data.name);
-        console.log(data.name);
+        setMessages(data.messages);
       } else {
         const errors = await res.json();
         console.log(errors);
       }
     })();
-  }, [roomId]);
-
-  useEffect(() => {
     socket = io("ws://127.0.0.1:5000", {
       transports: ["polling", "websocket"],
     });
     console.log("in socket useEffect");
 
-    socket.on("connect", () => {
+    socket.emit("join", roomId);
+
+    // callback to check the connection type
+    socket.on("connect", (socketio) => {
       const transport = socket.io.engine.transport.name;
       console.log(transport);
       const connected = socket.connected;
       console.log(connected);
+    });
+
+    // runs if/when the connection is upgraded from polling to websockets
+    socket.io.engine.on("upgrade", () => {
+      const upgradedTransport = socket.io.engine.transport.name;
+      console.log(upgradedTransport);
     });
 
     socket.on("chat", (chat) => {
@@ -48,7 +54,7 @@ export default function Room() {
       console.log("connection closed");
       socket.disconnect();
     };
-  }, []);
+  }, [roomId]);
 
   const updateMessageInput = (e) => {
     setMessageInput(e.target.value);
@@ -56,7 +62,12 @@ export default function Room() {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    socket.emit("chat", { user: session.username, content: messageInput });
+    socket.emit("chat", {
+      user: session.username,
+      user_id: session.id,
+      content: messageInput,
+      room_id: roomId,
+    });
     setMessageInput("");
   };
 
