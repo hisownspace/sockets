@@ -14,6 +14,12 @@ export default function Chat() {
         console.log(errors);
       }
     })();
+    (async () => {
+      const res = await fetch("/api/messages");
+      if (res.ok) {
+        const allConversations = await res.json();
+      }
+    })();
   }, []);
 
   return (

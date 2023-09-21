@@ -43,6 +43,11 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String(255), nullable=False)
     theme = db.Column(db.String(31), nullable=False)
 
+    direct_messages = db.relationship("DirectMessage", back_populates="user")
+    conversations = db.relationship(
+        "Conversation", secondary="user_conversations", back_populates="members"
+    )
+
     @property
     def password(self):
         return self.hashed_password
@@ -71,6 +76,9 @@ class Message(db.Model):
 
     room = db.relationship("Room", back_populates="messages")
     user = db.relationship("User")
+    conversation = db.relationship(
+        "Conversation", secondary="user_conversations", back_populates="members"
+    )
 
     def to_dict(self, from_room=False):
         return {
@@ -133,3 +141,40 @@ class Room(db.Model):
             "name": self.name,
             "messages": message_dicts,
         }
+
+
+class Conversation(db.Model):
+    __tablename__ = "conversations"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    members = db.relationship(
+        "User", secondary="user_conversations", back_populates="conversations"
+    )
+    messages = db.relationship("DirectMessage", back_populates="conversation")
+
+
+class DirectMessage(db.Model):
+    __tablename__ = "direct_messages"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(2000))
+    conversation_id = db.Column(db.Integer, db.ForeignKey("conversations.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+
+    conversation = db.relationship("Conversation", back_populates="messages")
+    user = db.relationship("User", back_populates="direct_messages")
+
+
+db.Table(
+    "user_conversations",
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column(
+        "conversation_id",
+        db.Integer,
+        db.ForeignKey("conversations.id"),
+        primary_key=True,
+    ),
+)

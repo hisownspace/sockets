@@ -1,6 +1,8 @@
 import os
+from datetime import datetime
 from flask_socketio import SocketIO, emit, join_room
-from models import db, Message
+from flask_login import current_user
+from models import db, Message, Room, User
 
 
 # origins = os.environ.get("ORIGINS")
@@ -32,6 +34,7 @@ def handle_chat(data):
         .order_by(Message.id.desc())
         .first()
     )
+    # code to store chat message in database
     new_message = Message(channel_id=room_id, content=content, user_id=user_id)
     db.session.add(new_message)
     db.session.commit()
@@ -41,6 +44,17 @@ def handle_chat(data):
         or latest_message.created_at.date() != new_message.created_at.date()
     ):
         chat_message["new_day"] = "Today"
+    # end db code
 
+    # # message formatted to work without database
+    # chat_message = {
+    #     "content": content,
+    #     "user": User.query.get(user_id).to_dict(),
+    #     "created_at": datetime.now().strftime("%-I:%M %p"),
+    #     "new_day": None
+    #     if latest_message.created_at.date() == datetime.now().date()
+    #     else "Today",
+    # }
+    # # end db-less code
     print(latest_message)
     emit("chat", chat_message, broadcast=True, to=room_id)
