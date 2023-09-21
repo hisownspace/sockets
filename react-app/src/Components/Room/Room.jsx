@@ -94,6 +94,21 @@ export default function Room() {
     setMessageInput("");
   };
 
+  useEffect(() => {
+    if (messages.length) {
+      const latestMessage = messages[messages.length - 1];
+      const now = Date.now();
+      const time = new Date(latestMessage["updated_at"]).getTime();
+      if (now - time < 1000 && session.id != latestMessage.user.id) {
+        console.log(session);
+        const newMessage = document.getElementById(
+          `message-content-${latestMessage.id}`
+        );
+        newMessage.style.animation = "blinker 2s linear 1";
+      }
+    }
+  }, [messages]);
+
   return (
     <div className="chat-room-container">
       <div>
