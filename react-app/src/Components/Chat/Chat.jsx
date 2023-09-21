@@ -19,6 +19,7 @@ export default function Chat() {
   return (
     <div className="chat-container">
       <div className="chat-sidebar">
+        <h3 className="sidebar-title">Rooms</h3>
         <ul>
           {rooms.map((room) => (
             <li className="room-list-item" key={room.id}>
@@ -26,6 +27,7 @@ export default function Chat() {
             </li>
           ))}
         </ul>
+        <h3 className="sidebar-title">Messages</h3>
       </div>
       <Outlet />
     </div>

@@ -5,8 +5,13 @@
 
 .chat-sidebar {
   width: 175px;
+  padding-right: 25px;
 }
 
 .room-list-item {
   list-style-type: none;
+}
+
+.sidebar-title {
+  margin-left: 25px;
 }

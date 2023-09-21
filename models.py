@@ -64,8 +64,10 @@ class Message(db.Model):
     content = db.Column(db.String(2000))
     channel_id = db.Column(db.Integer, db.ForeignKey("rooms.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    created_at = db.Column(db.DateTime, default=datetime.now())
-    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now())
+    updated_at = db.Column(
+        db.DateTime, default=lambda: datetime.now(), onupdate=lambda: datetime.now()
+    )
 
     room = db.relationship("Room", back_populates="messages")
     user = db.relationship("User")
@@ -74,6 +76,7 @@ class Message(db.Model):
         return {
             "id": self.id,
             "content": self.content,
+            "room": self.room.name,
             "user": self.user.to_dict(),
             # "created_at": self.created_at.strftime("%a, %b %-d% at %-I:%M %p")
             # if self.created_at.date() != datetime.today().date()
