@@ -76,9 +76,6 @@ class Message(db.Model):
 
     room = db.relationship("Room", back_populates="messages")
     user = db.relationship("User")
-    conversation = db.relationship(
-        "Conversation", secondary="user_conversations", back_populates="members"
-    )
 
     def to_dict(self, from_room=False):
         return {
@@ -134,7 +131,6 @@ class Room(db.Model):
             message_dicts[idx]["created_at"] = message_dicts[idx][
                 "created_at"
             ].strftime("%-I:%M %p")
-        pprint(message_dicts)
 
         return {
             "id": self.id,
@@ -151,7 +147,14 @@ class Conversation(db.Model):
     members = db.relationship(
         "User", secondary="user_conversations", back_populates="conversations"
     )
-    messages = db.relationship("DirectMessage", back_populates="conversation")
+    direct_messages = db.relationship("DirectMessage")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "members": [member.username for member in self.members],
+            "messages": [message.to_dict() for message in self.messages],
+        }
 
 
 class DirectMessage(db.Model):
@@ -164,8 +167,15 @@ class DirectMessage(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
-    conversation = db.relationship("Conversation", back_populates="messages")
     user = db.relationship("User", back_populates="direct_messages")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "created_at": self.created_at.strftime("%A, %B %-d at %-I:%M %p"),
+            "user": self.user.to_dict(),
+        }
 
 
 db.Table(

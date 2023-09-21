@@ -3,6 +3,8 @@ import { Link, Outlet } from "react-router-dom";
 
 export default function Chat() {
   const [rooms, setRooms] = useState([]);
+  const [conversations, setConversations] = useState([]);
+
   useEffect(() => {
     (async () => {
       const res = await fetch("/api/rooms");
@@ -15,12 +17,18 @@ export default function Chat() {
       }
     })();
     (async () => {
-      const res = await fetch("/api/messages");
+      const res = await fetch("/api/conversations");
       if (res.ok) {
         const allConversations = await res.json();
       }
     })();
   }, []);
+
+  const newConversation = (e) => {
+    e.preventDefault();
+
+    console.log("Open modal");
+  };
 
   return (
     <div className="chat-container">
@@ -34,7 +42,21 @@ export default function Chat() {
           ))}
         </ul>
         <h3 className="sidebar-title">Messages</h3>
+        <form onSubmit={newConversation} className="dm-form">
+          <button className="dm-button">New Conversation</button>
+        </form>
       </div>
+      <ul>
+        {conversations.map((conversation) => {
+          <li className="conversation-list-item" key={conversation.id}>
+            <Link to={`/conversation/${conversation.id}`}>
+              {conversation.members.map((member, idx) =>
+                idx < conversation.members.length ? `${member},` : { member }
+              )}
+            </Link>
+          </li>;
+        })}
+      </ul>
       <Outlet />
     </div>
   );

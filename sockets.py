@@ -28,7 +28,6 @@ def handle_chat(data):
     room_id = data["room_id"]
     content = data["content"]
     user_id = data["user_id"]
-    print(data)
     latest_message = (
         Message.query.filter(Message.channel_id == room_id)
         .order_by(Message.id.desc())
@@ -56,5 +55,4 @@ def handle_chat(data):
     #     else "Today",
     # }
     # # end db-less code
-    print(latest_message)
     emit("chat", chat_message, broadcast=True, to=room_id)

@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_wtf.csrf import generate_csrf
 from config import Config
-from models import db, User, Message, Room
+from models import db, User, Message, Room, Conversation, DirectMessage
 from forms import LoginForm
 from sockets import socketio
 from seeders import seed_commands
@@ -37,10 +37,8 @@ def authenticate():
 def login():
     form = LoginForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
-    print(form.data)
     if form.validate_on_submit():
         username = form.data["username"]
-        print(username)
         user = User.query.filter_by(username=username).first()
         login_user(user)
         return user.to_dict()
@@ -56,7 +54,6 @@ def logout():
 @app.route("/api/users")
 def get_all_users():
     all_users = User.query.all()
-    print(all_users)
     return [user.to_dict() for user in all_users], 200
 
 
@@ -68,10 +65,14 @@ def get_all_rooms():
 
 @app.route("/api/rooms/<int:roomId>")
 def get_single_room(roomId):
-    print(current_user)
     room = Room.query.get(roomId)
-    print(room)
     return room.to_dict(), 200
+
+
+@app.route("/api/conversations")
+def get_all_conversations():
+    my_conversations = current_user.conversations
+    return [conversation.to_dict() for conversation in my_conversations], 200
 
 
 @app.after_request
