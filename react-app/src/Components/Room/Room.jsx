@@ -54,16 +54,18 @@ export default function Room() {
       console.log("emitting chat");
       setMessages((messages) => [...messages, chat]);
       console.log(chat);
-      addNotification({
-        title: chat.room,
-        subtitle: { id: `message-content-${chat.id}` },
-        icon: "../../../public/vite.jpg",
-        message: `${chat.user.username}: ${chat.content}`,
-        native: true,
-        onClick: handleNotificationClick,
-        silent: false,
-        badge: ["test"],
-      });
+      if (session.id != chat.user.id && !document.hasFocus()) {
+        addNotification({
+          title: chat.room,
+          subtitle: { id: `message-content-${chat.id}` },
+          icon: "../../../public/vite.jpg",
+          message: `${chat.user.username}: ${chat.content}`,
+          native: true,
+          onClick: handleNotificationClick,
+          silent: false,
+          badge: ["test"],
+        });
+      }
     });
 
     return () => {
@@ -75,7 +77,7 @@ export default function Room() {
   const handleNotificationClick = (e) => {
     window.focus();
     const new_message = document.getElementById(e.target.data.id);
-    new_message.style.animation = "blinker 2s linear 3";
+    new_message.style.animation = "blinker 2s linear 1";
     window.scrollTo(0, document.body.scrollHeight);
   };
 
@@ -99,8 +101,11 @@ export default function Room() {
       const latestMessage = messages[messages.length - 1];
       const now = Date.now();
       const time = new Date(latestMessage["updated_at"]).getTime();
-      if (now - time < 1000 && session.id != latestMessage.user.id) {
-        console.log(session);
+      if (
+        now - time < 1000 &&
+        session.id != latestMessage.user.id &&
+        !document.hidden
+      ) {
         const newMessage = document.getElementById(
           `message-content-${latestMessage.id}`
         );
