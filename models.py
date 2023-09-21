@@ -102,9 +102,12 @@ class Room(db.Model):
             this_message = messages[idx].to_dict(from_room=True)
             if idx == 0:
                 message_dicts[idx] = this_message
-                message_dicts[idx]["new_day"] = this_message["created_at"].strftime(
-                    "%A, %B %-d"
-                )
+                if messages[idx].created_at.date() == datetime.today().date():
+                    message_dicts[idx]["new_day"] = "Today"
+                else:
+                    message_dicts[idx]["new_day"] = this_message["created_at"].strftime(
+                        "%A, %B %-d"
+                    )
             if (
                 idx + 1 < len(messages)
                 and messages[idx].to_dict(from_room=True)["created_at"].date()

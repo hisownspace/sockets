@@ -27,7 +27,20 @@ def handle_chat(data):
     content = data["content"]
     user_id = data["user_id"]
     print(data)
+    latest_message = (
+        Message.query.filter(Message.channel_id == room_id)
+        .order_by(Message.id.desc())
+        .first()
+    )
     new_message = Message(channel_id=room_id, content=content, user_id=user_id)
     db.session.add(new_message)
     db.session.commit()
-    emit("chat", new_message.to_dict(from_room=False), broadcast=True, to=room_id)
+    chat_message = new_message.to_dict(from_room=False)
+    if (
+        latest_message is None
+        or latest_message.created_at.date() != new_message.created_at.date()
+    ):
+        chat_message["new_day"] = "Today"
+
+    print(latest_message)
+    emit("chat", chat_message, broadcast=True, to=room_id)
