@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import NewDirectMessageModal from "../NewDirectMessageModal";
+import { SessionContext } from "../../context/session";
 
 export default function Chat() {
+  const { session } = useContext(SessionContext);
   const [rooms, setRooms] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [open, setOpen] = useState(false);
@@ -22,6 +24,8 @@ export default function Chat() {
       const res = await fetch("/api/conversations");
       if (res.ok) {
         const allConversations = await res.json();
+        setConversations(allConversations);
+        console.log(allConversations);
       }
     })();
   }, []);
@@ -47,18 +51,22 @@ export default function Chat() {
         <form onSubmit={newConversation} className="dm-form">
           <button className="dm-button">New Conversation</button>
         </form>
+        <ul>
+          {conversations.map((conversation) => (
+            <li className="conversation-list-item" key={conversation.id}>
+              <Link to={`/conversations/${conversation.id}`}>
+                {conversation.members.map((member, idx) =>
+                  idx + 1 < conversation.members.length
+                    ? session.username === member
+                      ? null
+                      : `${member}, `
+                    : `${member}`
+                )}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul>
-        {conversations.map((conversation) => {
-          <li className="conversation-list-item" key={conversation.id}>
-            <Link to={`/conversation/${conversation.id}`}>
-              {conversation.members.map((member, idx) =>
-                idx < conversation.members.length ? `${member},` : { member }
-              )}
-            </Link>
-          </li>;
-        })}
-      </ul>
       <Outlet />
       <div>
         <NewDirectMessageModal isOpen={open} onClose={() => setOpen(false)} />

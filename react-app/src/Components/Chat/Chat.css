@@ -16,3 +16,7 @@
 .sidebar-title {
   margin-left: 25px;
 }
+
+.conversation-list-item {
+  list-style: none;
+}

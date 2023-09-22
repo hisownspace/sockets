@@ -153,7 +153,7 @@ class Conversation(db.Model):
         return {
             "id": self.id,
             "members": [member.username for member in self.members],
-            "messages": [message.to_dict() for message in self.messages],
+            "messages": [message.to_dict() for message in self.direct_messages],
         }
 
 

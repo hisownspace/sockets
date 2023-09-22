@@ -7,6 +7,7 @@ import Login from "./Components/Login";
 import Chat from "./Components/Chat";
 import Room from "./Components/Room";
 import { SessionContext } from "./context/session";
+import Message from "./Components/Message/Message";
 
 function App() {
   const { session, setSession } = useContext(SessionContext);
@@ -36,6 +37,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Chat />}>
             <Route path=":roomId" element={<Room />} />
+            <Route path="conversations/:conversationId" element={<Message />} />
           </Route>
         </Routes>
       ) : null}

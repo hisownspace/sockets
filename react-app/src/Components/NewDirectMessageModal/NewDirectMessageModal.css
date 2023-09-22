@@ -38,3 +38,26 @@
 .new-dm-button {
   margin: 15px 0;
 }
+
+.searched-recipients {
+  background: grey;
+  position: absolute;
+  width: 267.5px;
+}
+
+.searched-recipients-list {
+  padding: 0 50px;
+  display: flex;
+  align-items: center;
+  background: grey;
+}
+
+.searched-recipients-list-item {
+  list-style: none;
+  background: grey;
+  cursor: pointer;
+}
+
+.selected-recipients {
+  margin-bottom: 10px;
+}

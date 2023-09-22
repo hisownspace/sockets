@@ -75,6 +75,20 @@ def get_all_conversations():
     return [conversation.to_dict() for conversation in my_conversations], 200
 
 
+@app.route("/api/conversations", methods=["POST"])
+def create_conversation():
+    users = request.get_json()["users"]
+    user_objs = []
+    for user in users:
+        user_obj = User.query.get(user["id"])
+        user_objs.append(user_obj)
+    new_conversation = Conversation()
+    new_conversation.members = user_objs
+    db.session.add(new_conversation)
+    db.session.commit()
+    return {"Message": "Conversation successfully created!"}, 201
+
+
 @app.route("/api/users/search")
 def search_for_user():
     search_query = request.args["user"]
