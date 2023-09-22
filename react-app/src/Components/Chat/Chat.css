@@ -1,10 +1,12 @@
 .chat-container {
   display: flex;
   padding-top: 20px;
+  margin: 20px;
 }
 
 .chat-sidebar {
-  width: 150px;
+  width: 175px;
+  padding-right: 25px;
 }
 
 .room-list-item {

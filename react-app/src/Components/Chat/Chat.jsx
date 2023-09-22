@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import NewDirectMessageModal from "../NewDirectMessageModal";
 
 export default function Chat() {
   const [rooms, setRooms] = useState([]);
   const [conversations, setConversations] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -26,12 +28,12 @@ export default function Chat() {
 
   const newConversation = (e) => {
     e.preventDefault();
-
     console.log("Open modal");
+    setOpen(true);
   };
 
   return (
-    <div className="chat-container">
+    <div className="chat-container" id="modal-parent">
       <div className="chat-sidebar">
         <h3 className="sidebar-title">Rooms</h3>
         <ul>
@@ -58,6 +60,9 @@ export default function Chat() {
         })}
       </ul>
       <Outlet />
+      <div>
+        <NewDirectMessageModal isOpen={open} onClose={() => setOpen(false)} />
+      </div>
     </div>
   );
 }

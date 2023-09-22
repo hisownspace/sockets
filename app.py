@@ -75,6 +75,13 @@ def get_all_conversations():
     return [conversation.to_dict() for conversation in my_conversations], 200
 
 
+@app.route("/api/users/search")
+def search_for_user():
+    search_query = request.args["user"]
+    users = User.query.filter(User.username.ilike(f"%{search_query}%")).all()
+    return [user.to_dict() for user in users]
+
+
 @app.after_request
 def inject_csrf_token(response):
     response.set_cookie(
