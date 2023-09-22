@@ -4,7 +4,7 @@ from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_wtf.csrf import generate_csrf
 from config import Config
 from models import db, User, Message, Room, Conversation, DirectMessage
-from forms import LoginForm
+from forms import LoginForm, DirectMessageForm
 from sockets import socketio
 from seeders import seed_commands
 
@@ -87,6 +87,23 @@ def create_conversation():
     db.session.add(new_conversation)
     db.session.commit()
     return {"Message": "Conversation successfully created!"}, 201
+
+
+@app.route("/api/conversations/<int:conversation_id>/messages", methods=["POST"])
+def send_dm(conversation_id):
+    form = DirectMessageForm()
+
+    form["csrf_token"].data = request.cookies["csrf_token"]
+
+    if form.validate_on_submit():
+        content = form.data["content"]
+        user = current_user
+        new_dm = DirectMessage(
+            content=content, user=user, conversation_id=conversation_id
+        )
+        db.session.add(new_dm)
+        db.session.commit()
+        return new_dm.to_dict(), 201
 
 
 @app.route("/api/users/search")

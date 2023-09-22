@@ -7,7 +7,7 @@ import Login from "./Components/Login";
 import Chat from "./Components/Chat";
 import Room from "./Components/Room";
 import { SessionContext } from "./context/session";
-import Message from "./Components/Message/Message";
+import Message from "./Components/Message";
 
 function App() {
   const { session, setSession } = useContext(SessionContext);

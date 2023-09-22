@@ -59,8 +59,16 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    def to_dict(self):
-        return {"id": self.id, "username": self.username, "theme": self.theme}
+    def to_dict(self, from_dm=False):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "theme": self.theme,
+            "conversations": [
+                conversation.id if from_dm else conversation.to_dict()
+                for conversation in self.conversations
+            ],
+        }
 
 
 class Message(db.Model):
@@ -174,7 +182,7 @@ class DirectMessage(db.Model):
             "id": self.id,
             "content": self.content,
             "created_at": self.created_at.strftime("%A, %B %-d at %-I:%M %p"),
-            "user": self.user.to_dict(),
+            "user": self.user.to_dict(from_dm=True),
         }
 
 
