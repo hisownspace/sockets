@@ -183,6 +183,7 @@ class DirectMessage(db.Model):
             "id": self.id,
             "content": self.content,
             "created_at": self.created_at.strftime("%A, %B %-d at %-I:%M %p"),
+            "updated_at": str(self.updated_at),
             "user": self.user.to_dict(from_dm=True),
             "conversation_id": self.conversation.id,
         }

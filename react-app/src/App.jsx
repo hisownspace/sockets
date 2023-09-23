@@ -32,14 +32,12 @@ function App() {
     })();
   }, [navigate]);
 
-  const handleNotificationClick = async (e) => {
+  const handleNotificationClick = (e) => {
     // window.focus();
-    const id = e.target.data.id;
-    await navigate(`/conversations/${id}`);
-    const new_message = await document.getElementById(
-      `direct-message-content-${e.target.data.id}`
-    );
-    new_message.style.animation = "blinker 2s linear 1";
+    const convo_id = e.target.data.convo_id;
+    const id = e.target.data.message_id;
+    console.log(id);
+    navigate(`/conversations/${convo_id}`, { state: id });
     window.scrollTo(0, document.body.scrollHeight);
   };
 
@@ -52,10 +50,24 @@ function App() {
       socket.emit("join", `conversation/${session.conversations[i].id}`);
     }
     socket.on("dm", (chat) => {
-      console.log(chat);
+      // console.log(session);
+      const conversation = session.conversations?.find(
+        (convo) => convo.id == chat.conversation_id
+      );
+      const convoIdx = session.conversations?.indexOf(
+        (convo) => convo.id == chat.conversation_id
+      );
+
+      const newSession = { ...session };
+
+      console.log(conversation);
+      conversation?.messages.push(chat);
+      newSession.conversations[convoIdx] = conversation;
+      // console.log(conversation?.messages);
+      setSession(newSession);
       addNotification({
         title: chat.room,
-        subtitle: { id: chat.conversation_id },
+        subtitle: { convo_id: chat.conversation_id, message_id: chat.id },
         icon: "../../../public/vite.jpg",
         message: `${chat.user.username}: ${chat.content}`,
         native: true,
@@ -64,6 +76,9 @@ function App() {
         badge: ["test"],
       });
     });
+    return () => {
+      socket.disconnect();
+    };
   }, [session]);
 
   return (
@@ -76,7 +91,7 @@ function App() {
             <Route
               path="conversations/:conversationId"
               element={<Message />}
-              socket={socket}
+              // socket={socket}
             />
           </Route>
         </Routes>

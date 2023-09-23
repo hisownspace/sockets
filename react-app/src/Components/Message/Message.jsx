@@ -1,28 +1,46 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { useLocation } from "react-router-dom";
 import { SessionContext } from "../../context/session";
 
 export default function Message({ socket }) {
   const { session } = useContext(SessionContext);
   const [dmInputValue, setDMInputValue] = useState("");
   const { conversationId } = useParams();
-  const [conversation, setConversation] = useState({});
+  // const [conversation, setConversation] = useState({});
+  const [messages, setMessages] = useState([]);
+  const [members, setMembers] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
-    if (socket) {
-      socket.on("chat", () => {
-        console.log("prop drilling works");
-      });
+    if (location.state) {
+      const new_message = document.getElementById(
+        `direct-message-content-${location.state}`
+      );
+      if (new_message) {
+        new_message.style.animation = "blinker 2s linear 1";
+      }
     }
-  }, [socket]);
+  }, [location, messages]);
+
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.connect();
+  //     return () => {
+  //       socket.disconnect();
+  //     };
+  //   }
+  // }, [socket]);
+  //
 
   useEffect(() => {
     const thisConversation = session.conversations.find(
       (conversation) => conversation.id == conversationId
     );
-    setConversation(thisConversation);
+    setMessages(thisConversation.messages);
+    setMembers(thisConversation.members);
     console.log(thisConversation);
-  }, [conversationId]);
+  }, [conversationId, session]);
 
   const handleChange = (e) => {
     setDMInputValue(e.target.value);
@@ -34,6 +52,7 @@ export default function Message({ socket }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setDMInputValue("");
     const res = await fetch(`/api/conversations/${conversationId}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -48,14 +67,13 @@ export default function Message({ socket }) {
   };
 
   useEffect(() => {
-    console.log(conversation.messages);
-    if (conversation.messages?.length) {
-      const latestMessage =
-        conversation.messages[conversation.messages?.length - 1];
+    console.log(messages);
+    if (messages.length) {
+      const latestMessage = messages[messages.length - 1];
       const now = Date.now();
       const time = new Date(latestMessage["updated_at"]).getTime();
       if (
-        now - time < 1000 &&
+        now - time < 100 &&
         session.id != latestMessage.user.id &&
         !document.hidden
       ) {
@@ -65,16 +83,16 @@ export default function Message({ socket }) {
         newMessage.style.animation = "blinker 2s linear 1";
       }
     }
-  }, [conversation.messages]);
+  }, [messages, session]);
 
   return (
     <div className="dm-container">
       <h1>
-        {conversation.members?.map((member, idx) =>
-          idx + 1 < conversation.members.length ? `${member}, ` : member
+        {members.map((member, idx) =>
+          idx + 1 < members.length ? `${member}, ` : member
         )}
       </h1>
-      {conversation.messages?.map((message, idx) => (
+      {messages.map((message, idx) => (
         <div key={idx} className="chat-message">
           {message.new_day ? (
             <div className="new-day-container">
