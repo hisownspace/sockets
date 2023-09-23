@@ -28,6 +28,10 @@ export default function Message({ socket }) {
     setDMInputValue(e.target.value);
   };
 
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await fetch(`/api/conversations/${conversationId}/messages`, {
@@ -43,6 +47,26 @@ export default function Message({ socket }) {
     }
   };
 
+  useEffect(() => {
+    console.log(conversation.messages);
+    if (conversation.messages?.length) {
+      const latestMessage =
+        conversation.messages[conversation.messages?.length - 1];
+      const now = Date.now();
+      const time = new Date(latestMessage["updated_at"]).getTime();
+      if (
+        now - time < 1000 &&
+        session.id != latestMessage.user.id &&
+        !document.hidden
+      ) {
+        const newMessage = document.getElementById(
+          `direct-message-content-${latestMessage.id}`
+        );
+        newMessage.style.animation = "blinker 2s linear 1";
+      }
+    }
+  }, [conversation.messages]);
+
   return (
     <div className="dm-container">
       <h1>
@@ -57,7 +81,10 @@ export default function Message({ socket }) {
               <span>{message.new_day}</span>
             </div>
           ) : null}
-          <div className="message-content" id={`message-content-${message.id}`}>
+          <div
+            className="message-content"
+            id={`direct-message-content-${message.id}`}
+          >
             {message.content}
           </div>
           <div className="message-user">

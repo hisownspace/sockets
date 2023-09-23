@@ -155,7 +155,7 @@ class Conversation(db.Model):
     members = db.relationship(
         "User", secondary="user_conversations", back_populates="conversations"
     )
-    direct_messages = db.relationship("DirectMessage")
+    direct_messages = db.relationship("DirectMessage", back_populates="conversation")
 
     def to_dict(self):
         return {
@@ -176,6 +176,7 @@ class DirectMessage(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     user = db.relationship("User", back_populates="direct_messages")
+    conversation = db.relationship("Conversation", back_populates="direct_messages")
 
     def to_dict(self):
         return {
@@ -183,6 +184,7 @@ class DirectMessage(db.Model):
             "content": self.content,
             "created_at": self.created_at.strftime("%A, %B %-d at %-I:%M %p"),
             "user": self.user.to_dict(from_dm=True),
+            "conversation_id": self.conversation.id,
         }
 
 

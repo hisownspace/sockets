@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./App.css";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import addNotification from "react-push-notification";
 import Login from "./Components/Login";
 import Chat from "./Components/Chat";
 import Room from "./Components/Room";
@@ -31,13 +32,39 @@ function App() {
     })();
   }, [navigate]);
 
+  const handleNotificationClick = async (e) => {
+    // window.focus();
+    const id = e.target.data.id;
+    await navigate(`/conversations/${id}`);
+    const new_message = await document.getElementById(
+      `direct-message-content-${e.target.data.id}`
+    );
+    new_message.style.animation = "blinker 2s linear 1";
+    window.scrollTo(0, document.body.scrollHeight);
+  };
+
   useEffect(() => {
     socket = io("http://127.0.0.1:5000", {
       transports: ["websocket", "polling"],
     });
 
-    socket.emit("join", "conversation/2");
-  }, []);
+    for (let i = 0; i < session.conversations?.length; i++) {
+      socket.emit("join", `conversation/${session.conversations[i].id}`);
+    }
+    socket.on("dm", (chat) => {
+      console.log(chat);
+      addNotification({
+        title: chat.room,
+        subtitle: { id: chat.conversation_id },
+        icon: "../../../public/vite.jpg",
+        message: `${chat.user.username}: ${chat.content}`,
+        native: true,
+        onClick: handleNotificationClick,
+        silent: false,
+        badge: ["test"],
+      });
+    });
+  }, [session]);
 
   return (
     <>

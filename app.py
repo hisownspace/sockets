@@ -104,6 +104,7 @@ def send_dm(conversation_id):
         )
         db.session.add(new_dm)
         db.session.commit()
+        print(new_dm.to_dict())
         socketio.emit("dm", new_dm.to_dict(), namespace="/")
         return new_dm.to_dict(), 201
 
