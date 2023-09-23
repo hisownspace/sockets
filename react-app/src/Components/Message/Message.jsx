@@ -2,11 +2,19 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { SessionContext } from "../../context/session";
 
-export default function Message() {
+export default function Message({ socket }) {
   const { session } = useContext(SessionContext);
   const [dmInputValue, setDMInputValue] = useState("");
   const { conversationId } = useParams();
   const [conversation, setConversation] = useState({});
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("chat", () => {
+        console.log("prop drilling works");
+      });
+    }
+  }, [socket]);
 
   useEffect(() => {
     const thisConversation = session.conversations.find(
@@ -22,7 +30,6 @@ export default function Message() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("hello!");
     const res = await fetch(`/api/conversations/${conversationId}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -5,6 +5,7 @@ from flask_wtf.csrf import generate_csrf
 from config import Config
 from models import db, User, Message, Room, Conversation, DirectMessage
 from forms import LoginForm, DirectMessageForm
+from flask_socketio import emit
 from sockets import socketio
 from seeders import seed_commands
 
@@ -103,6 +104,7 @@ def send_dm(conversation_id):
         )
         db.session.add(new_dm)
         db.session.commit()
+        socketio.emit("dm", new_dm.to_dict(), namespace="/")
         return new_dm.to_dict(), 201
 
 

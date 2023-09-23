@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { io } from "socket.io-client";
 import "./App.css";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Login from "./Components/Login";
@@ -8,6 +7,8 @@ import Chat from "./Components/Chat";
 import Room from "./Components/Room";
 import { SessionContext } from "./context/session";
 import Message from "./Components/Message";
+
+let socket;
 
 function App() {
   const { session, setSession } = useContext(SessionContext);
@@ -30,6 +31,14 @@ function App() {
     })();
   }, [navigate]);
 
+  useEffect(() => {
+    socket = io("http://127.0.0.1:5000", {
+      transports: ["websocket", "polling"],
+    });
+
+    socket.emit("join", "conversation/2");
+  }, []);
+
   return (
     <>
       <Login />
@@ -37,7 +46,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Chat />}>
             <Route path=":roomId" element={<Room />} />
-            <Route path="conversations/:conversationId" element={<Message />} />
+            <Route
+              path="conversations/:conversationId"
+              element={<Message />}
+              socket={socket}
+            />
           </Route>
         </Routes>
       ) : null}
