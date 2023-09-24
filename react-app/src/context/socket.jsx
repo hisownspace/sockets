@@ -1,5 +1,8 @@
-import { createContext } from "react";
+import { io } from "socket.io-client";
 
-export const SocketContext = createContext();
+const URL =
+  process.env.NODE_ENV == "production" ? "undefined" : "localhost:5000";
 
-export default SocketContext;
+console.log(URL);
+
+export const socket = io(URL, { transports: ["polling", "websocket"] });

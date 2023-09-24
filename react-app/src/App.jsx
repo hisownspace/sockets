@@ -7,9 +7,8 @@ import Login from "./Components/Login";
 import Chat from "./Components/Chat";
 import Room from "./Components/Room";
 import { SessionContext } from "./context/session";
+import { socket } from "./context/socket";
 import Message from "./Components/Message";
-
-let socket;
 
 function App() {
   const { session, setSession } = useContext(SessionContext);
@@ -42,15 +41,12 @@ function App() {
   };
 
   useEffect(() => {
-    socket = io("http://127.0.0.1:5000", {
-      transports: ["websocket", "polling"],
-    });
 
     for (let i = 0; i < session.conversations?.length; i++) {
       socket.emit("join", `conversation/${session.conversations[i].id}`);
     }
-    socket.on("dm", (chat) => {
-      // console.log(session);
+
+    const onDirectMessage = (chat) => {
       const conversation = session.conversations?.find(
         (convo) => convo.id == chat.conversation_id
       );
@@ -60,24 +56,28 @@ function App() {
 
       const newSession = { ...session };
 
-      console.log(conversation);
       conversation?.messages.push(chat);
       newSession.conversations[convoIdx] = conversation;
-      // console.log(conversation?.messages);
+
       setSession(newSession);
-      addNotification({
-        title: chat.room,
-        subtitle: { convo_id: chat.conversation_id, message_id: chat.id },
-        icon: "../../../public/vite.jpg",
-        message: `${chat.user.username}: ${chat.content}`,
-        native: true,
-        onClick: handleNotificationClick,
-        silent: false,
-        badge: ["test"],
-      });
-    });
+      if (chat.user.username !== session.username) {
+        addNotification({
+          title: chat.room,
+          subtitle: { convo_id: chat.conversation_id, message_id: chat.id },
+          icon: "../../../public/vite.jpg",
+          message: `${chat.user.username}: ${chat.content}`,
+          native: true,
+          onClick: handleNotificationClick,
+          silent: false,
+          badge: ["test"],
+        });
+      }
+    };
+
+    socket.on("dm", onDirectMessage);
+
     return () => {
-      socket.disconnect();
+      socket.off("dm", onDirectMessage);
     };
   }, [session]);
 

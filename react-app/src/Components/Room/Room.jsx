@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { io } from "socket.io-client";
 import addNotification from "react-push-notification";
 import { SessionContext } from "../../context/session";
-
-let socket;
+import { socket } from "../../context/socket";
 
 export default function Room() {
   const [messages, setMessages] = useState([]);
@@ -29,10 +27,6 @@ export default function Room() {
         console.log(errors);
       }
     })();
-    socket = io("http://127.0.0.1:5000", {
-      transports: ["polling", "websocket"],
-    });
-    console.log("in socket useEffect");
 
     socket.emit("join", roomId);
 
@@ -50,7 +44,7 @@ export default function Room() {
       console.log(upgradedTransport);
     });
 
-    socket.on("chat", (chat) => {
+    const onRoomMessage = (chat) => {
       console.log("emitting chat");
       setMessages((messages) => [...messages, chat]);
       console.log(chat);
@@ -66,11 +60,12 @@ export default function Room() {
           badge: ["test"],
         });
       }
-    });
+    };
+
+    socket.on("chat", onRoomMessage);
 
     return () => {
-      console.log("connection closed");
-      socket.disconnect();
+      socket.off("chat", onRoomMessage);
     };
   }, [roomId]);
 
