@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { SessionContext } from "../../context/session";
 import { useNavigate } from "react-router";
+import { socket } from "../../context/socket";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ export default function Login() {
     if (res.ok) {
       const user = await res.json();
       setSession(user);
+      socket.connect();
       navigate("/1");
     } else {
       const errors = await res.json();
@@ -51,6 +53,7 @@ export default function Login() {
       const res = await fetch("/api/logout");
       if (res.ok) {
         setSession({});
+        socket.disconnect();
         navigate("/");
       }
     })();

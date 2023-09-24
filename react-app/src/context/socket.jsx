@@ -5,4 +5,7 @@ const URL =
 
 console.log(URL);
 
-export const socket = io(URL, { transports: ["polling", "websocket"] });
+export const socket = io(URL, {
+  autoConnect: false,
+  transports: ["polling", "websocket"],
+});
