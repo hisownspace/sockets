@@ -53,8 +53,8 @@ export default function Login() {
       const res = await fetch("/api/logout");
       if (res.ok) {
         setSession({});
-        socket.disconnect();
         navigate("/");
+        socket.disconnect();
       }
     })();
   };

@@ -7,7 +7,6 @@ export default function Message({ socket }) {
   const { session } = useContext(SessionContext);
   const [dmInputValue, setDMInputValue] = useState("");
   const { conversationId } = useParams();
-  // const [conversation, setConversation] = useState({});
   const [messages, setMessages] = useState([]);
   const [members, setMembers] = useState([]);
   const location = useLocation();
@@ -23,23 +22,23 @@ export default function Message({ socket }) {
     }
   }, [location, messages]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.connect();
-  //     return () => {
-  //       socket.disconnect();
-  //     };
-  //   }
-  // }, [socket]);
-  //
-
   useEffect(() => {
     const thisConversation = session.conversations.find(
       (conversation) => conversation.id == conversationId
     );
-    setMessages(thisConversation.messages);
-    setMembers(thisConversation.members);
-    console.log(thisConversation);
+    if (thisConversation) {
+      thisConversation.members = thisConversation.members.filter(
+        (member) => member != session.username
+      );
+      if (
+        thisConversation.members[thisConversation.members.length - 1] !== "You"
+      ) {
+        thisConversation.members.push("You");
+      }
+      setMessages(thisConversation.messages);
+      setMembers(thisConversation.members);
+      console.log(thisConversation);
+    }
   }, [conversationId, session]);
 
   const handleChange = (e) => {
@@ -89,7 +88,13 @@ export default function Message({ socket }) {
     <div className="dm-container">
       <h1>
         {members.map((member, idx) =>
-          idx + 1 < members.length ? `${member}, ` : member
+          idx + 1 < members.length
+            ? session.username === member
+              ? "You, "
+              : `${member}, `
+            : session.username === member
+            ? "you "
+            : member
         )}
       </h1>
       {messages.map((message, idx) => (

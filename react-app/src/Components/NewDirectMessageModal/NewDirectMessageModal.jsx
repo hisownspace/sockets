@@ -1,8 +1,14 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+import { useNavigate } from "react-router-dom";
 import { SessionContext } from "../../context/session";
 
-export default function NewDirectMessageModal({ isOpen, onClose }) {
+export default function NewDirectMessageModal({
+  isOpen,
+  onClose,
+  setConversations,
+}) {
+  const navigate = useNavigate();
   const { session } = useContext(SessionContext);
   const [users, setUsers] = useState([]);
   const [searchedUsers, setSearchedUsers] = useState([]);
@@ -39,6 +45,12 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ users: [session, ...selectedUsers] }),
     });
+    if (res.ok) {
+      const conversation = await res.json();
+      setConversations((conversations) => [...conversations, conversation]);
+      navigate(`/conversations/${conversation.id}`);
+      setSelectedUsers([]);
+    }
   };
 
   const handleChange = (e) => {

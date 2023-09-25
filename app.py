@@ -83,11 +83,44 @@ def create_conversation():
     for user in users:
         user_obj = User.query.get(user["id"])
         user_objs.append(user_obj)
+    all_conversations = Conversation.query.all()
     new_conversation = Conversation()
     new_conversation.members = user_objs
-    db.session.add(new_conversation)
-    db.session.commit()
-    return {"Message": "Conversation successfully created!"}, 201
+
+    def check_conversation_exists(new_conversation, all_conversations):
+        same_conversations = []
+        for conversation in all_conversations:
+            did_break = False
+            # print(conversation.members)
+            for member in conversation.members:
+                if member not in new_conversation.members:
+                    same_conversations.append(True)
+                    did_break = True
+                    break
+            if did_break:
+                continue
+            for member in new_conversation.members:
+                if member not in conversation.members:
+                    same_conversations.append(True)
+                    did_break = True
+                    break
+            if did_break:
+                continue
+            same_conversations.append(False)
+        print(same_conversations)
+        return (
+            all_conversations[same_conversations.index(False)]
+            if not all(same_conversations)
+            else False
+        )
+
+    conversation_exists = check_conversation_exists(new_conversation, all_conversations)
+    if conversation_exists:
+        return conversation_exists.to_dict()
+    else:
+        db.session.add(new_conversation)
+        db.session.commit()
+        return new_conversation.to_dict(), 201
 
 
 @app.route("/api/conversations/<int:conversation_id>/messages", methods=["POST"])

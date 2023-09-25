@@ -30,20 +30,6 @@ export default function Room() {
 
     socket.emit("join", roomId);
 
-    // callback to check the connection type
-    socket.on("connect", () => {
-      const transport = socket.io.engine.transport.name;
-      console.log(transport);
-      const connected = socket.connected;
-      console.log(connected);
-    });
-
-    // runs if/when the connection is upgraded from polling to websockets
-    socket.io.engine.on("upgrade", () => {
-      const upgradedTransport = socket.io.engine.transport.name;
-      console.log(upgradedTransport);
-    });
-
     const onRoomMessage = (chat) => {
       console.log("emitting chat");
       setMessages((messages) => [...messages, chat]);

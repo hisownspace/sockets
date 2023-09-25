@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import NewDirectMessageModal from "../NewDirectMessageModal";
 import { SessionContext } from "../../context/session";
+import { socket } from "../../context/socket";
 
 export default function Chat() {
   const { session } = useContext(SessionContext);
@@ -23,12 +24,25 @@ export default function Chat() {
     (async () => {
       const res = await fetch("/api/conversations");
       if (res.ok) {
-        const allConversations = await res.json();
+        let allConversations = await res.json();
+        allConversations = allConversations.filter(
+          (convo) => convo.messages.length
+        );
         setConversations(allConversations);
         console.log(allConversations);
       }
     })();
   }, []);
+
+  const handleDirectMessage = async (chat) => {
+    const res = await fetch("/api/conversations");
+    if (res.ok) {
+      const allConversations = await res.json();
+      setConversations(allConversations);
+    }
+  };
+
+  socket.on("dm", handleDirectMessage);
 
   const newConversation = (e) => {
     e.preventDefault();
@@ -56,10 +70,19 @@ export default function Chat() {
             <li className="conversation-list-item" key={conversation.id}>
               <Link to={`/conversations/${conversation.id}`}>
                 {conversation.members.map((member, idx) =>
-                  idx + 1 < conversation.members.length
+                  idx + 1 < conversation.members.length &&
+                  !(
+                    conversation.members[conversation.members.length - 1] ==
+                      session.username &&
+                    idx + 2 === conversation.members.length
+                  )
                     ? session.username === member
                       ? null
+                      : conversation.members.length === 2
+                      ? member
                       : `${member}, `
+                    : session.username === member
+                    ? null
                     : `${member}`
                 )}
               </Link>
@@ -69,7 +92,11 @@ export default function Chat() {
       </div>
       <Outlet />
       <div>
-        <NewDirectMessageModal isOpen={open} onClose={() => setOpen(false)} />
+        <NewDirectMessageModal
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          setConversations={setConversations}
+        />
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import "./App.css";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import addNotification from "react-push-notification";
@@ -32,7 +31,7 @@ function App() {
   }, [navigate]);
 
   const handleNotificationClick = (e) => {
-    // window.focus();
+    window.focus();
     const convo_id = e.target.data.convo_id;
     const id = e.target.data.message_id;
     console.log(id);
@@ -41,7 +40,6 @@ function App() {
   };
 
   useEffect(() => {
-
     for (let i = 0; i < session.conversations?.length; i++) {
       socket.emit("join", `conversation/${session.conversations[i].id}`);
     }
@@ -74,6 +72,22 @@ function App() {
       }
     };
 
+    // callback to check the connection type
+    socket.on("connect", () => {
+      const transport = socket.io.engine.transport.name;
+      console.log(transport);
+      const connected = socket.connected;
+      console.log(connected);
+    });
+
+    // runs if/when the connection is upgraded from polling to websockets
+    if (socket.io.engine) {
+      socket.io.engine.on("upgrade", () => {
+        const upgradedTransport = socket.io.engine.transport.name;
+        console.log(upgradedTransport);
+      });
+    }
+
     socket.on("dm", onDirectMessage);
 
     return () => {
@@ -91,7 +105,6 @@ function App() {
             <Route
               path="conversations/:conversationId"
               element={<Message />}
-              // socket={socket}
             />
           </Route>
         </Routes>
