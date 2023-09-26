@@ -88,34 +88,42 @@ def create_conversation():
     new_conversation = Conversation()
     new_conversation.members = user_objs
 
+    # def check_conversation_exists(new_conversation, all_conversations):
+    #     same_conversations = []
+    #     for conversation in all_conversations:
+    #         did_break = False
+    #         # print(conversation.members)
+    #         for member in conversation.members:
+    #             if member not in new_conversation.members:
+    #                 same_conversations.append(True)
+    #                 did_break = True
+    #                 break
+    #         if did_break:
+    #             continue
+    #         for member in new_conversation.members:
+    #             if member not in conversation.members:
+    #                 same_conversations.append(True)
+    #                 did_break = True
+    #                 break
+    #         if did_break:
+    #             continue
+    #         same_conversations.append(False)
+    #     return (
+    #         all_conversations[same_conversations.index(False)]
+    #         if not all(same_conversations)
+    #         else False
+    #     )
+
     def check_conversation_exists(new_conversation, all_conversations):
-        same_conversations = []
+        new_conversation_members = set(new_conversation.members)
         for conversation in all_conversations:
-            did_break = False
-            # print(conversation.members)
-            for member in conversation.members:
-                if member not in new_conversation.members:
-                    same_conversations.append(True)
-                    did_break = True
-                    break
-            if did_break:
-                continue
-            for member in new_conversation.members:
-                if member not in conversation.members:
-                    same_conversations.append(True)
-                    did_break = True
-                    break
-            if did_break:
-                continue
-            same_conversations.append(False)
-        print(same_conversations)
-        return (
-            all_conversations[same_conversations.index(False)]
-            if not all(same_conversations)
-            else False
-        )
+            conversation_members = set(conversation.members)
+            if conversation_members == new_conversation_members:
+                return conversation
+        return False
 
     conversation_exists = check_conversation_exists(new_conversation, all_conversations)
+
     if conversation_exists:
         return conversation_exists.to_dict()
     else:

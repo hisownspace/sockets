@@ -36,6 +36,9 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedUsers.length) {
+      return;
+    }
     onClose();
     console.log({ users: [...selectedUsers, session] });
     const res = await fetch("/api/conversations", {
