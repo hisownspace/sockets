@@ -2,14 +2,12 @@ import React, { useContext, useRef, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { SessionContext } from "../../context/session";
+import { ConversationContext } from "../../context/conversations";
 
-export default function NewDirectMessageModal({
-  isOpen,
-  onClose,
-  setConversations,
-}) {
+export default function NewDirectMessageModal({ isOpen, onClose }) {
   const navigate = useNavigate();
   const { session } = useContext(SessionContext);
+  const { conversations, setConversations } = useContext(ConversationContext);
   const [users, setUsers] = useState([]);
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);

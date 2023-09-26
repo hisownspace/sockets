@@ -102,10 +102,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Chat />}>
             <Route path=":roomId" element={<Room />} />
-            <Route
-              path="conversations/:conversationId"
-              element={<Message />}
-            />
+            <Route path="conversations/:conversationId" element={<Message />} />
           </Route>
         </Routes>
       ) : null}

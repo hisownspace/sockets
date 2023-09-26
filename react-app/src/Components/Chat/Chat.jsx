@@ -3,11 +3,12 @@ import { Link, Outlet } from "react-router-dom";
 import NewDirectMessageModal from "../NewDirectMessageModal";
 import { SessionContext } from "../../context/session";
 import { socket } from "../../context/socket";
+import { ConversationContext } from "../../context/conversations";
 
 export default function Chat() {
   const { session } = useContext(SessionContext);
+  const { conversations, setConversations } = useContext(ConversationContext);
   const [rooms, setRooms] = useState([]);
-  const [conversations, setConversations] = useState([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -21,28 +22,20 @@ export default function Chat() {
         console.log(errors);
       }
     })();
-    (async () => {
+    const handleDirectMessage = async () => {
       const res = await fetch("/api/conversations");
       if (res.ok) {
-        let allConversations = await res.json();
-        allConversations = allConversations.filter(
-          (convo) => convo.messages.length
-        );
+        const allConversations = await res.json();
         setConversations(allConversations);
-        console.log(allConversations);
       }
-    })();
+    };
+
+    socket.on("dm", handleDirectMessage);
+
+    return () => {
+      socket.off("dm", handleDirectMessage);
+    };
   }, []);
-
-  const handleDirectMessage = async (chat) => {
-    const res = await fetch("/api/conversations");
-    if (res.ok) {
-      const allConversations = await res.json();
-      setConversations(allConversations);
-    }
-  };
-
-  socket.on("dm", handleDirectMessage);
 
   const newConversation = (e) => {
     e.preventDefault();
@@ -92,11 +85,7 @@ export default function Chat() {
       </div>
       <Outlet />
       <div>
-        <NewDirectMessageModal
-          isOpen={open}
-          onClose={() => setOpen(false)}
-          setConversations={setConversations}
-        />
+        <NewDirectMessageModal isOpen={open} onClose={() => setOpen(false)} />
       </div>
     </div>
   );

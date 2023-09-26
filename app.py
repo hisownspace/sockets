@@ -73,6 +73,7 @@ def get_single_room(roomId):
 @app.route("/api/conversations")
 def get_all_conversations():
     my_conversations = current_user.conversations
+    print(current_user)
     return [conversation.to_dict() for conversation in my_conversations], 200
 
 
