@@ -43,6 +43,11 @@ class User(db.Model, UserMixin):
     hashed_password = db.Column(db.String(255), nullable=False)
     theme = db.Column(db.String(31), nullable=False)
 
+    direct_messages = db.relationship("DirectMessage", back_populates="user")
+    conversations = db.relationship(
+        "Conversation", secondary="user_conversations", back_populates="members"
+    )
+
     @property
     def password(self):
         return self.hashed_password
@@ -54,8 +59,16 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-    def to_dict(self):
-        return {"id": self.id, "username": self.username, "theme": self.theme}
+    def to_dict(self, from_dm=False):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "theme": self.theme,
+            "conversations": [
+                conversation.id if from_dm else conversation.to_dict()
+                for conversation in self.conversations
+            ],
+        }
 
 
 class Message(db.Model):
@@ -64,8 +77,10 @@ class Message(db.Model):
     content = db.Column(db.String(2000))
     channel_id = db.Column(db.Integer, db.ForeignKey("rooms.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    created_at = db.Column(db.DateTime, default=datetime.now())
-    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now())
+    updated_at = db.Column(
+        db.DateTime, default=lambda: datetime.now(), onupdate=lambda: datetime.now()
+    )
 
     room = db.relationship("Room", back_populates="messages")
     user = db.relationship("User")
@@ -74,6 +89,7 @@ class Message(db.Model):
         return {
             "id": self.id,
             "content": self.content,
+            "room": self.room.name,
             "user": self.user.to_dict(),
             # "created_at": self.created_at.strftime("%a, %b %-d% at %-I:%M %p")
             # if self.created_at.date() != datetime.today().date()
@@ -99,9 +115,12 @@ class Room(db.Model):
             this_message = messages[idx].to_dict(from_room=True)
             if idx == 0:
                 message_dicts[idx] = this_message
-                message_dicts[idx]["new_day"] = this_message["created_at"].strftime(
-                    "%A, %B %-d"
-                )
+                if messages[idx].created_at.date() == datetime.today().date():
+                    message_dicts[idx]["new_day"] = "Today"
+                else:
+                    message_dicts[idx]["new_day"] = this_message["created_at"].strftime(
+                        "%A, %B %-d"
+                    )
             if (
                 idx + 1 < len(messages)
                 and messages[idx].to_dict(from_room=True)["created_at"].date()
@@ -120,10 +139,64 @@ class Room(db.Model):
             message_dicts[idx]["created_at"] = message_dicts[idx][
                 "created_at"
             ].strftime("%-I:%M %p")
-        pprint(message_dicts)
 
         return {
             "id": self.id,
             "name": self.name,
             "messages": message_dicts,
         }
+
+
+class Conversation(db.Model):
+    __tablename__ = "conversations"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    members = db.relationship(
+        "User", secondary="user_conversations", back_populates="conversations"
+    )
+    direct_messages = db.relationship("DirectMessage", back_populates="conversation")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "members": [member.username for member in self.members],
+            "messages": [message.to_dict() for message in self.direct_messages],
+        }
+
+
+class DirectMessage(db.Model):
+    __tablename__ = "direct_messages"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(2000))
+    conversation_id = db.Column(db.Integer, db.ForeignKey("conversations.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+
+    user = db.relationship("User", back_populates="direct_messages")
+    conversation = db.relationship("Conversation", back_populates="direct_messages")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "created_at": self.created_at.strftime("%A, %B %-d at %-I:%M %p"),
+            "updated_at": str(self.updated_at),
+            "user": self.user.to_dict(from_dm=True),
+            "conversation_id": self.conversation.id,
+            "members": [member.username for member in self.conversation.members],
+        }
+
+
+db.Table(
+    "user_conversations",
+    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column(
+        "conversation_id",
+        db.Integer,
+        db.ForeignKey("conversations.id"),
+        primary_key=True,
+    ),
+)

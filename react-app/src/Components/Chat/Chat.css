@@ -1,12 +1,22 @@
 .chat-container {
   display: flex;
   padding-top: 20px;
+  margin: 20px;
 }
 
 .chat-sidebar {
   width: 175px;
+  padding-right: 25px;
 }
 
 .room-list-item {
   list-style-type: none;
+}
+
+.sidebar-title {
+  margin-left: 25px;
+}
+
+.conversation-list-item {
+  list-style: none;
 }

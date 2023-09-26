@@ -17,3 +17,7 @@ class LoginForm(FlaskForm):
         user = User.query.filter_by(username=form.username.data).first()
         if user and not user.check_password(field.data):
             raise ValidationError("Invalid username/password combo")
+
+
+class DirectMessageForm(FlaskForm):
+    content = StringField("Content", [InputRequired(), Length(max=2000)])

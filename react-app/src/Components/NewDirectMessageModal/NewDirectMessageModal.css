@@ -1,0 +1,63 @@
+.new-dm-modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+#modal-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.66);
+}
+
+#modal-content {
+  position: absolute;
+  width: 25%;
+  height: fit-content;
+  padding: 40px;
+  border-radius: 8px;
+  background-color: #242424;
+}
+
+.new-dm-form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.new-dm-button {
+  margin: 15px 0;
+}
+
+.searched-recipients {
+  background: grey;
+  position: absolute;
+  width: 267.5px;
+}
+
+.searched-recipients-list {
+  padding: 0 50px;
+  display: flex;
+  align-items: center;
+  background: grey;
+}
+
+.searched-recipients-list-item {
+  list-style: none;
+  background: grey;
+  cursor: pointer;
+}
+
+.selected-recipients {
+  margin-bottom: 10px;
+}

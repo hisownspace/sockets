@@ -1,10 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { SessionContext } from "../../context/session";
 import { useNavigate } from "react-router";
+import { socket } from "../../context/socket";
+import { ConversationContext } from "../../context/conversations";
 
 export default function Login() {
   const navigate = useNavigate();
   const { session, setSession } = useContext(SessionContext);
+  const { setConversations } = useContext(ConversationContext);
   const [currentUser, setCurrentUser] = useState();
   const [allUsers, setAllUsers] = useState([]);
   const [errors, setErrors] = useState({});
@@ -38,11 +41,23 @@ export default function Login() {
     if (res.ok) {
       const user = await res.json();
       setSession(user);
+      socket.connect();
       navigate("/1");
     } else {
       const errors = await res.json();
       console.log(errors);
     }
+    // (async () => {
+    //   const res = await fetch("/api/conversations");
+    //   if (res.ok) {
+    //     let allConversations = await res.json();
+    //     allConversations = allConversations.filter(
+    //       (convo) => convo.messages.length
+    //     );
+    //     setConversations(allConversations);
+    //     console.log(allConversations);
+    //   }
+    // })();
   };
 
   const handleLogout = (e) => {
@@ -52,6 +67,7 @@ export default function Login() {
       if (res.ok) {
         setSession({});
         navigate("/");
+        socket.disconnect();
       }
     })();
   };

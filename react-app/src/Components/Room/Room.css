@@ -1,18 +1,37 @@
+.chat-room-container {
+  margin-bottom: 25px;
+}
+
 .message-user {
   /* margin-right: 0; */
   font-size: 1em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   line-height: 0;
-  width: 75vw;
+  width: 100%;
   text-align: right;
-  margin: 10px 0 20px -40px;
+  margin: 0 20px 10px 0;
   padding-right: 20px;
+}
+
+.chat-message {
+  display: flex;
+  flex-direction: column;
 }
 
 .message-content {
   width: 100%;
-  display: inline;
+  display: block;
   font-size: 1.25em;
+  padding: 20px 20px 20px 15px;
+  box-sizing: border-box;
+  background: #242424;
+}
+
+@keyframes blinker {
+  50% {
+    background-color: white;
+    color: black;
+  }
 }
 
 .message-user span {
@@ -38,7 +57,7 @@
   line-height: 0;
   text-align: center;
   width: 76vw;
-  margin: 10px 0 20px -45px;
+  margin: 25px -20px 20px 0;
   padding-right: 20px;
 }
 

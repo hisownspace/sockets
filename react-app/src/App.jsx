@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import addNotification from "react-push-notification";
 import Login from "./Components/Login";
 import Chat from "./Components/Chat";
 import Room from "./Components/Room";
 import { SessionContext } from "./context/session";
+import { socket } from "./context/socket";
+import Message from "./Components/Message";
 
 function App() {
   const { session, setSession } = useContext(SessionContext);
@@ -29,6 +30,84 @@ function App() {
     })();
   }, [navigate]);
 
+  const handleNotificationClick = (e) => {
+    window.focus();
+    const convo_id = e.target.data.convo_id;
+    const id = e.target.data.message_id;
+    console.log(id);
+    navigate(`/conversations/${convo_id}`, { state: id });
+    window.scrollTo(0, document.body.scrollHeight);
+  };
+
+  useEffect(() => {
+    for (let i = 0; i < session.conversations?.length; i++) {
+      socket.emit("join", `conversation/${session.conversations[i].id}`);
+    }
+
+    const onDirectMessage = (chat) => {
+      const conversation = session.conversations?.find(
+        (convo) => convo.id == chat.conversation_id
+      );
+      const convoIdx = session.conversations?.indexOf(
+        (convo) => convo.id == chat.conversation_id
+      );
+
+      const newSession = { ...session };
+
+      conversation?.messages.push(chat);
+      newSession.conversations[convoIdx] = conversation;
+
+      setSession(newSession);
+      console.log(chat);
+      if (chat.user.username !== session.username) {
+        addNotification({
+          title: chat.members
+            .map((member) => {
+              return member === session.username ? "You" : member;
+            })
+            .join(", "),
+          subtitle: { convo_id: chat.conversation_id, message_id: chat.id },
+          icon: "../../../public/vite.jpg",
+          message: `${chat.user.username}: ${chat.content}`,
+          native: true,
+          onClick: handleNotificationClick,
+          silent: false,
+          badge: ["test"],
+        });
+      }
+    };
+
+    // callback to check the connection type
+    socket.on("connect", () => {
+      const transport = socket.io.engine.transport.name;
+      console.log(transport);
+      const connected = socket.connected;
+      console.log(connected);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected!");
+      if (session.username) {
+        console.log("Attempting to reconnect...");
+        socket.connect();
+      }
+    });
+
+    // runs if/when the connection is upgraded from polling to websockets
+    if (socket.io.engine) {
+      socket.io.engine.on("upgrade", () => {
+        const upgradedTransport = socket.io.engine.transport.name;
+        console.log(upgradedTransport);
+      });
+    }
+
+    socket.on("dm", onDirectMessage);
+
+    return () => {
+      socket.off("dm", onDirectMessage);
+    };
+  }, [session]);
+
   return (
     <>
       <Login />
@@ -36,6 +115,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Chat />}>
             <Route path=":roomId" element={<Room />} />
+            <Route path="conversations/:conversationId" element={<Message />} />
           </Route>
         </Routes>
       ) : null}
