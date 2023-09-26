@@ -9,7 +9,9 @@ from alembic import op
 import sqlalchemy as sa
 import os
 
-environment = os.environ.get("FLASK_ENV")
+environment = (
+    "production" if os.environ.get("FLASK_DEBUG") == "False" else "environment"
+)
 SCHEMA = os.environ.get("FLASK_SCHEMA")
 
 # revision identifiers, used by Alembic.

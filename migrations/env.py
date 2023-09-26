@@ -10,7 +10,9 @@ from alembic import context
 
 import os
 
-environment = os.getenv("FLASK_ENV")
+environment = (
+    "production" if os.environ.get("FLASK_DEBUG") == "False" else "environment"
+)
 SCHEMA = os.environ.get("SCHEMA")
 
 
