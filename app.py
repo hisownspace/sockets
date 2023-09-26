@@ -151,6 +151,8 @@ def send_dm(conversation_id):
             "dm", new_dm.to_dict(), namespace="/", to=f"conversation/{conversation_id}"
         )
         return new_dm.to_dict(), 201
+    print(form.errors)
+    return {"errors": form.errors}, 500
 
 
 @app.route("/api/users/search")

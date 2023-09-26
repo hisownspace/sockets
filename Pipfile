@@ -17,6 +17,7 @@ flask-socketio = "*"
 eventlet = "==0.30.2"
 gunicorn = "*"
 gevent-websocket = "*"
+importlib-metadata = "==6.7.0"
 
 [dev-packages]
 

@@ -85,6 +85,14 @@ function App() {
       console.log(connected);
     });
 
+    socket.on("disconnect", () => {
+      console.log("Disconnected!");
+      if (session.username) {
+        console.log("Attempting to reconnect...");
+        socket.connect();
+      }
+    });
+
     // runs if/when the connection is upgraded from polling to websockets
     if (socket.io.engine) {
       socket.io.engine.on("upgrade", () => {
