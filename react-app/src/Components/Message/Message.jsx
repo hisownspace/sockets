@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useLocation } from "react-router-dom";
 import { SessionContext } from "../../context/session";
 
 export default function Message({ socket }) {
   const { session } = useContext(SessionContext);
+  const navigate = useNavigate();
   const [dmInputValue, setDMInputValue] = useState("");
   const { conversationId } = useParams();
   const [messages, setMessages] = useState([]);
@@ -27,6 +28,11 @@ export default function Message({ socket }) {
       (conversation) => conversation.id == conversationId
     );
     if (thisConversation) {
+      console.log(thisConversation.members);
+      console.log(session.username);
+      // if (!thisConversation.members.includes(session.username)) {
+      //   navigate("/");
+      // }
       thisConversation.members = thisConversation.members.filter(
         (member) => member != session.username
       );
@@ -38,8 +44,10 @@ export default function Message({ socket }) {
       setMessages(thisConversation.messages);
       setMembers(thisConversation.members);
       console.log(thisConversation);
+    } else {
+      navigate("/1");
     }
-  }, [conversationId, session]);
+  }, [conversationId, session, navigate]);
 
   const handleChange = (e) => {
     setDMInputValue(e.target.value);
@@ -113,7 +121,9 @@ export default function Message({ socket }) {
           <div className="message-user">
             <span>
               <span style={{ color: message.user.theme }}>
-                {message.user.username}
+                {message.user.username == session.username
+                  ? "You"
+                  : message.user.username}
               </span>
               <span className="timestamp">{message.created_at}</span>
             </span>

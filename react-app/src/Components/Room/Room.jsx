@@ -118,7 +118,9 @@ export default function Room() {
               <div className="message-user">
                 <span>
                   <span style={{ color: message.user.theme }}>
-                    {message.user.username}
+                    {message.user.username == session.username
+                      ? "You"
+                      : message.user.username}
                   </span>
                   <span className="timestamp">{message.created_at}</span>
                 </span>

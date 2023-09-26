@@ -22,6 +22,19 @@ export default function Chat() {
         console.log(errors);
       }
     })();
+
+    (async () => {
+      const res = await fetch("/api/conversations");
+      if (res.ok) {
+        let allConversations = await res.json();
+        allConversations = allConversations.filter(
+          (convo) => convo.messages.length
+        );
+        setConversations(allConversations);
+        console.log(allConversations);
+      }
+    })();
+
     const handleDirectMessage = async () => {
       const res = await fetch("/api/conversations");
       if (res.ok) {

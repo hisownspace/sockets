@@ -186,6 +186,7 @@ class DirectMessage(db.Model):
             "updated_at": str(self.updated_at),
             "user": self.user.to_dict(from_dm=True),
             "conversation_id": self.conversation.id,
+            "members": [member.username for member in self.conversation.members],
         }
 
 

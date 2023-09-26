@@ -58,9 +58,14 @@ function App() {
       newSession.conversations[convoIdx] = conversation;
 
       setSession(newSession);
+      console.log(chat);
       if (chat.user.username !== session.username) {
         addNotification({
-          title: chat.room,
+          title: chat.members
+            .map((member) => {
+              return member === session.username ? "You" : member;
+            })
+            .join(", "),
           subtitle: { convo_id: chat.conversation_id, message_id: chat.id },
           icon: "../../../public/vite.jpg",
           message: `${chat.user.username}: ${chat.content}`,

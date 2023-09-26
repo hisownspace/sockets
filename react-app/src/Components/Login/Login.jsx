@@ -47,17 +47,17 @@ export default function Login() {
       const errors = await res.json();
       console.log(errors);
     }
-    (async () => {
-      const res = await fetch("/api/conversations");
-      if (res.ok) {
-        let allConversations = await res.json();
-        allConversations = allConversations.filter(
-          (convo) => convo.messages.length
-        );
-        setConversations(allConversations);
-        console.log(allConversations);
-      }
-    })();
+    // (async () => {
+    //   const res = await fetch("/api/conversations");
+    //   if (res.ok) {
+    //     let allConversations = await res.json();
+    //     allConversations = allConversations.filter(
+    //       (convo) => convo.messages.length
+    //     );
+    //     setConversations(allConversations);
+    //     console.log(allConversations);
+    //   }
+    // })();
   };
 
   const handleLogout = (e) => {

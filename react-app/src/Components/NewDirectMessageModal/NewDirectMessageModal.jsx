@@ -6,7 +6,7 @@ import { ConversationContext } from "../../context/conversations";
 
 export default function NewDirectMessageModal({ isOpen, onClose }) {
   const navigate = useNavigate();
-  const { session } = useContext(SessionContext);
+  const { session, setSession } = useContext(SessionContext);
   const { conversations, setConversations } = useContext(ConversationContext);
   const [users, setUsers] = useState([]);
   const [searchedUsers, setSearchedUsers] = useState([]);
@@ -49,6 +49,12 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
     if (res.ok) {
       const conversation = await res.json();
       setConversations((conversations) => [...conversations, conversation]);
+      setSession((session) => {
+        return {
+          ...session,
+          conversations: [...session.conversations, conversation],
+        };
+      });
       navigate(`/conversations/${conversation.id}`);
       setSelectedUsers([]);
     }
