@@ -21,7 +21,9 @@ def seed_rooms():
 
 def undo_rooms():
     if environment == "production":
-        db.session.execute(f"TRUNCATE table {SCHEMA}.rooms RESTART IDENTITY CASCADE;")
+        db.session.execute(
+            text(f"TRUNCATE table {SCHEMA}.rooms RESTART IDENTITY CASCADE;")
+        )
     else:
         db.session.execute(text("DELETE FROM rooms;"))
     db.session.commit()
@@ -52,7 +54,9 @@ def seed_users():
 
 def undo_users():
     if environment == "production":
-        db.session.execute(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;")
+        db.session.execute(
+            text(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;")
+        )
     else:
         db.session.execute(text("DELETE FROM users;"))
     db.session.commit()
@@ -61,7 +65,7 @@ def undo_users():
 def undo_messages():
     if environment == "production":
         db.session.execute(
-            f"TRUNCATE table {SCHEMA}.messages RESTART IDENTITY CASCADE;"
+            text(f"TRUNCATE table {SCHEMA}.messages RESTART IDENTITY CASCADE;")
         )
     else:
         db.session.execute(text("DELETE FROM messages;"))
@@ -71,7 +75,7 @@ def undo_messages():
 def undo_conversations():
     if environment == "production":
         db.session.execute(
-            f"TRUNCATE table {SCHEMA}.conversations RESTART IDENTITY CASCADE;"
+            text(f"TRUNCATE table {SCHEMA}.conversations RESTART IDENTITY CASCADE;")
         )
     else:
         db.session.execute(text("DELETE FROM conversations;"))
@@ -81,7 +85,9 @@ def undo_conversations():
 def undo_user_conversations():
     if environment == "production":
         db.session.execute(
-            f"TRUNCATE table {SCHEMA}.user_conversations RESTART IDENTITY CASCADE;"
+            text(
+                f"TRUNCATE table {SCHEMA}.user_conversations RESTART IDENTITY CASCADE;"
+            )
         )
     else:
         db.session.execute(text("DELETE FROM user_conversations;"))
@@ -91,7 +97,7 @@ def undo_user_conversations():
 def undo_direct_messages():
     if environment == "production":
         db.session.execute(
-            f"TRUNCATE table {SCHEMA}.direct_messages RESTART IDENTITY CASCADE;"
+            text(f"TRUNCATE table {SCHEMA}.direct_messages RESTART IDENTITY CASCADE;")
         )
     else:
         db.session.execute(text("DELETE FROM direct_messages;"))
