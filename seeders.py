@@ -4,6 +4,7 @@ from flask.cli import AppGroup
 from models import db, User, Room
 
 environment = os.environ.get("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
 
 seed_commands = AppGroup("seed")
 
@@ -19,7 +20,10 @@ def seed_rooms():
 
 
 def undo_rooms():
-    db.session.execute(text("DELETE FROM rooms;"))
+    if environment == "production":
+        db.session.execute(f"TRUNCATE table {SCHEMA}.rooms RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute(text("DELETE FROM rooms;"))
     db.session.commit()
 
 
@@ -47,25 +51,51 @@ def seed_users():
 
 
 def undo_users():
-    db.session.execute(text("DELETE FROM users;"))
+    if environment == "production":
+        db.session.execute(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute(text("DELETE FROM users;"))
     db.session.commit()
 
 
 def undo_messages():
-    db.session.execute(text("DELETE FROM messages;"))
+    if environment == "production":
+        db.session.execute(
+            f"TRUNCATE table {SCHEMA}.messages RESTART IDENTITY CASCADE;"
+        )
+    else:
+        db.session.execute(text("DELETE FROM messages;"))
     db.session.commit()
 
 
 def undo_conversations():
-    db.session.execute(text("DELETE FROM conversations;"))
+    if environment == "production":
+        db.session.execute(
+            f"TRUNCATE table {SCHEMA}.conversations RESTART IDENTITY CASCADE;"
+        )
+    else:
+        db.session.execute(text("DELETE FROM conversations;"))
+    db.session.commit()
 
 
 def undo_user_conversations():
-    db.session.execute(text("DELETE FROM user_conversations;"))
+    if environment == "production":
+        db.session.execute(
+            f"TRUNCATE table {SCHEMA}.user_conversations RESTART IDENTITY CASCADE;"
+        )
+    else:
+        db.session.execute(text("DELETE FROM user_conversations;"))
+    db.session.commit()
 
 
 def undo_direct_messages():
-    db.session.execute(text("DELETE FROM direct_messages;"))
+    if environment == "production":
+        db.session.execute(
+            f"TRUNCATE table {SCHEMA}.direct_messages RESTART IDENTITY CASCADE;"
+        )
+    else:
+        db.session.execute(text("DELETE FROM direct_messages;"))
+    db.session.commit()
 
 
 @seed_commands.command("all")
