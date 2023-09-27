@@ -11,7 +11,7 @@ from flask_socketio import emit
 from sockets import socketio
 from seeders import seed_commands
 
-app = Flask(__name__, static_folder="../dist/assets", static_url_path="/")
+app = Flask(__name__, static_folder="./react-app/dist", static_url_path="/")
 app.config.from_object(Config)
 db.init_app(app)
 Migrate(app, db)
