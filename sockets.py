@@ -5,7 +5,7 @@ from flask_login import current_user
 from models import db, Message, Room, User
 
 
-environment = "development" if int(os.environ.get("FLASK_DEBUG")) else "production"
+environment = os.environ.get("FLASK_ENV")
 if environment == "development":
     origins = "*"
 else:

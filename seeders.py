@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 from flask.cli import AppGroup
 from models import db, User, Room
 
-environment = "development" if int(os.environ.get("FLASK_DEBUG")) else "production"
+environment = os.environ.get("FLASK_ENV")
 
 seed_commands = AppGroup("seed")
 
