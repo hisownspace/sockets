@@ -39,6 +39,13 @@ SCHEMA = os.environ.get("SCHEMA")
 db = SQLAlchemy(metadata=metadata)
 
 
+def add_prefix_for_production(attr):
+    if environment == "production":
+        return f"{SCHEMA}.{attr}"
+    else:
+        return attr
+
+
 class User(db.Model, UserMixin):
     __tablename__ = "users"
 
@@ -86,8 +93,12 @@ class Message(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(2000))
-    channel_id = db.Column(db.Integer, db.ForeignKey("rooms.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    channel_id = db.Column(
+        db.Integer, db.ForeignKey(add_prefix_for_production("rooms.id"))
+    )
+    user_id = db.Column(
+        db.Integer, db.ForeignKey(add_prefix_for_production("users.id"))
+    )
     created_at = db.Column(db.DateTime, default=lambda: datetime.now())
     updated_at = db.Column(
         db.DateTime, default=lambda: datetime.now(), onupdate=lambda: datetime.now()
@@ -191,8 +202,12 @@ class DirectMessage(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(2000))
-    conversation_id = db.Column(db.Integer, db.ForeignKey("conversations.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    conversation_id = db.Column(
+        db.Integer, db.ForeignKey(add_prefix_for_prod("conversations.id"))
+    )
+    user_id = db.Column(
+        db.Integer, db.ForeignKey(add_prefix_for_production("users.id"))
+    )
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -213,11 +228,16 @@ class DirectMessage(db.Model):
 
 user_conversations = db.Table(
     "user_conversations",
-    db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column(
+        "user_id",
+        db.Integer,
+        db.ForeignKey(add_prefix_for_production("users.id")),
+        primary_key=True,
+    ),
     db.Column(
         "conversation_id",
         db.Integer,
-        db.ForeignKey("conversations.id"),
+        db.ForeignKey(add_prefix_for_production("conversations.id")),
         primary_key=True,
     ),
 )
