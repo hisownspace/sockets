@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 flask = "==2.2.5"
-flask-sqlalchemy = "*"
+flask-sqlalchemy = "==3.0.5"
 sqlalchemy = "*"
 flask-migrate = "*"
 alembic = "*"
