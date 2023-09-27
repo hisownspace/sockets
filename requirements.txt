@@ -29,7 +29,7 @@ simple-websocket==0.10.1
 six==1.16.0
 sqlalchemy==2.0.21
 typing-extensions==4.7.1
-werkzeug==2.3.7
+werkzeug==2.2.3
 wsproto==1.2.0
 wtforms==3.0.1
 zipp==3.17.0
