@@ -71,12 +71,12 @@ def undo_direct_messages():
 @seed_commands.command("all")
 def seed_all():
     if environment == "production":
-        undo_rooms()
-        undo_users()
-        undo_messages()
         undo_direct_messages()
         undo_user_conversations()
         undo_conversations()
+        undo_rooms()
+        undo_users()
+        undo_messages()
     seed_users()
     seed_rooms()
 
