@@ -44,7 +44,7 @@ def upgrade():
     )
 
     if environment == "production":
-        op.execute(text(f"ALTER TABLE 'user' SET SCHEMA {SCHEMA};"))
+        op.execute(text(f'ALTER TABLE "user" SET SCHEMA {SCHEMA};'))
 
     # ### end Alembic commands ###
 
