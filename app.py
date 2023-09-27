@@ -64,6 +64,8 @@ def get_all_users():
 
 @app.route("/api/rooms")
 def get_all_rooms():
+    environment = "development" if int(os.environ.get("FLASK_DEBUG")) else "production"
+    print(environment)
     all_rooms = Room.query.all()
     return [room.to_dict() for room in all_rooms], 200
 

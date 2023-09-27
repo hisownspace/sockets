@@ -1,6 +1,9 @@
+import os
 from sqlalchemy.sql import text
 from flask.cli import AppGroup
 from models import db, User, Room
+
+environment = "development" if int(os.environ.get("FLASK_DEBUG")) else "production"
 
 seed_commands = AppGroup("seed")
 
@@ -53,14 +56,33 @@ def undo_messages():
     db.session.commit()
 
 
+def undo_conversations():
+    db.session.execute(text("DELETE FROM conversations;"))
+
+
+def undo_user_conversations():
+    db.session.execute(text("DELETE FROM user_conversations;"))
+
+
+def undo_direct_messages():
+    db.session.execute(text("DELETE FROM direct_messages;"))
+
+
 @seed_commands.command("all")
 def seed_all():
+    if environment == "production":
+        undo_rooms()
+        undo_users()
+        undo_messages()
+        undo_direct_messages()
+        undo_user_conversations()
+        undo_conversations()
     seed_users()
     seed_rooms()
 
 
 @seed_commands.command("undo")
 def undo_all():
-    undo_users()
     undo_rooms()
+    undo_users()
     undo_messages()

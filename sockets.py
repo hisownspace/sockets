@@ -5,8 +5,14 @@ from flask_login import current_user
 from models import db, Message, Room, User
 
 
-# origins = os.environ.get("ORIGINS")
-origins = "*"
+environment = "development" if int(os.environ.get("FLASK_DEBUG")) else "production"
+if environment == "development":
+    origins = "*"
+else:
+    origins = [
+        "http://websockets-testing.onrender.com",
+        "https://websockets-testing.onrender.com",
+    ]
 
 
 socketio = SocketIO(cors_allowed_origins=origins, logger=True)

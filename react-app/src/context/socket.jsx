@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 const URL =
-  process.env.NODE_ENV == "production" ? "undefined" : "localhost:5000";
+  process.env.NODE_ENV == "production" ? "websockets-testing.onrender.com" : "localhost:5000";
 
 console.log(URL);
 
