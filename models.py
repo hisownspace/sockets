@@ -203,7 +203,7 @@ class DirectMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(2000))
     conversation_id = db.Column(
-        db.Integer, db.ForeignKey(add_prefix_for_prod("conversations.id"))
+        db.Integer, db.ForeignKey(add_prefix_for_production("conversations.id"))
     )
     user_id = db.Column(
         db.Integer, db.ForeignKey(add_prefix_for_production("users.id"))
