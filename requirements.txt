@@ -10,7 +10,7 @@ flask-migrate==4.0.5
 flask-socketio==5.3.6
 flask-sqlalchemy==3.0.5
 flask-wtf==1.1.1
-gevent==23.9.1
+gevent==22.10.2
 gevent-websocket==0.10.1
 greenlet==2.0.2
 gunicorn==21.2.0
