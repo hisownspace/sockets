@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request
+from flask import Flask, request, redirect
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_wtf.csrf import generate_csrf
@@ -21,6 +22,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 app.cli.add_command(seed_commands)
+
+CORS(app, expose_headers=["Access-Control-Allow-Origin", "content-length"])
 
 
 @login_manager.user_loader
@@ -186,6 +189,15 @@ def react_root(path):
     if path == "favicon.ico":
         return app.send_from_directory("public", "favicon.ico")
     return app.send_static_file("index.html")
+
+
+@app.before_request
+def https_redirect():
+    if os.environ.get("FLASK_ENV") == "production":
+        if request.headers.get("X-Forwarded-Proto") == "http":
+            url = request.url.replace("http://", "https://", 1)
+            code = 301
+            return redirect(url, code=code)
 
 
 @app.errorhandler(404)

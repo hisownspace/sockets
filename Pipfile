@@ -23,6 +23,7 @@ setuptools = "*"
 typing-extensions = "*"
 werkzeug = "*"
 zipp = "*"
+flask-cors = "*"
 
 [dev-packages]
 
