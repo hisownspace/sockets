@@ -100,7 +100,6 @@ def run_migrations_online():
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
-            process_revision_directives=process_revision_directives,
             **current_app.extensions["migrate"].configure_args,
         )
         # Create a schema (only in production)
