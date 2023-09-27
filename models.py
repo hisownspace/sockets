@@ -1,20 +1,9 @@
-import os
 from pprint import pprint
 from datetime import datetime
 from sqlalchemy import MetaData
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
-environment = "production" if os.environ.get("FLASK_DEBUG") == 0 else "development"
-SCHEMA = os.environ.get("FLASK_SCHEMA")
-
-
-def add_prefix_for_production(attr):
-    if environment == "production":
-        return f"{SCHEMA}.{attr}"
-    else:
-        return attr
 
 
 suffixes = {
@@ -48,9 +37,6 @@ db = SQLAlchemy(metadata=metadata)
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
-
-    if environment == "production":
-        __table_args__ = {"schema": SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), nullable=False)
@@ -87,10 +73,6 @@ class User(db.Model, UserMixin):
 
 class Message(db.Model):
     __tablename__ = "messages"
-
-    if environment == "production":
-        __table_args__ = {"schema": SCHEMA}
-
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(2000))
     channel_id = db.Column(db.Integer, db.ForeignKey("rooms.id"))
@@ -121,10 +103,6 @@ class Message(db.Model):
 
 class Room(db.Model):
     __tablename__ = "rooms"
-
-    if environment == "production":
-        __table_args__ = {"schema": SCHEMA}
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
 
@@ -172,9 +150,6 @@ class Room(db.Model):
 class Conversation(db.Model):
     __tablename__ = "conversations"
 
-    if environment == "production":
-        __table_args__ = {"schema": SCHEMA}
-
     id = db.Column(db.Integer, primary_key=True)
 
     members = db.relationship(
@@ -192,9 +167,6 @@ class Conversation(db.Model):
 
 class DirectMessage(db.Model):
     __tablename__ = "direct_messages"
-
-    if environment == "production":
-        __table_args__ = {"schema": SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(2000))
@@ -218,7 +190,7 @@ class DirectMessage(db.Model):
         }
 
 
-user_conversations = db.Table(
+db.Table(
     "user_conversations",
     db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
     db.Column(
@@ -228,7 +200,3 @@ user_conversations = db.Table(
         primary_key=True,
     ),
 )
-
-
-if environment == "production":
-    user_conversations.schema = SCHEMA
