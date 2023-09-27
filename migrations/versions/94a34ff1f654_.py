@@ -7,6 +7,7 @@ Create Date: 2023-09-18 17:39:13.667900
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import text
 import os
 
 environment = os.environ.get("FLASK_ENV")
@@ -32,7 +33,7 @@ def upgrade():
     )
 
     if environment == "production":
-        op.execute(f"ALTER TABLE message SET SCHEMA {SCHEMA};")
+        op.execute(text(f"ALTER TABLE message SET SCHEMA {SCHEMA};"))
 
     op.create_table(
         "user",
@@ -43,7 +44,7 @@ def upgrade():
     )
 
     if environment == "production":
-        op.execute(f"ALTER TABLE user SET SCHEMA {SCHEMA};")
+        op.execute(text(f"ALTER TABLE user SET SCHEMA {SCHEMA};"))
 
     # ### end Alembic commands ###
 
