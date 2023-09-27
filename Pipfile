@@ -19,6 +19,7 @@ gunicorn = "*"
 gevent-websocket = "*"
 importlib-metadata = "==6.7.0"
 gevent = "==22.10.2"
+setuptools = "==68.0.0"
 
 [dev-packages]
 
