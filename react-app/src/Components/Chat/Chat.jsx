@@ -28,7 +28,7 @@ export default function Chat() {
       if (res.ok) {
         let allConversations = await res.json();
         allConversations = allConversations.filter(
-          (convo) => convo.messages.length
+          (convo) => convo.messages.length,
         );
         setConversations(allConversations);
         console.log(allConversations);
@@ -89,7 +89,7 @@ export default function Chat() {
                       : `${member}, `
                     : session.username === member
                     ? null
-                    : `${member}`
+                    : `${member}`,
                 )}
               </Link>
             </li>

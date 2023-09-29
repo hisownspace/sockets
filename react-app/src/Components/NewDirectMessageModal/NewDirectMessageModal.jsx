@@ -48,6 +48,7 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
     });
     if (res.ok) {
       const conversation = await res.json();
+      console.log("New Convercations:", conversation);
       setConversations((conversations) => [...conversations, conversation]);
       setSession((session) => {
         return {

@@ -8,6 +8,6 @@ const URL =
 console.log(URL);
 
 export const socket = io(URL, {
-  autoConnect: false,
+  // autoConnect: false,
   transports: ["polling", "websocket"],
 });

@@ -10,12 +10,13 @@ export default function Message({ socket }) {
   const { conversationId } = useParams();
   const [messages, setMessages] = useState([]);
   const [members, setMembers] = useState([]);
+  const [chatErrors, setChatErrors] = useState([]);
   const location = useLocation();
 
   useEffect(() => {
     if (location.state) {
       const new_message = document.getElementById(
-        `direct-message-content-${location.state}`
+        `direct-message-content-${location.state}`,
       );
       if (new_message) {
         new_message.style.animation = "blinker 2s linear 1";
@@ -25,7 +26,7 @@ export default function Message({ socket }) {
 
   useEffect(() => {
     const thisConversation = session.conversations.find(
-      (conversation) => conversation.id == conversationId
+      (conversation) => conversation.id == conversationId,
     );
     if (thisConversation) {
       console.log(thisConversation.members);
@@ -34,12 +35,13 @@ export default function Message({ socket }) {
       //   navigate("/");
       // }
       thisConversation.members = thisConversation.members.filter(
-        (member) => member != session.username
+        (member) => member != session.username,
       );
       if (
-        thisConversation.members[thisConversation.members.length - 1] !== "You"
+        thisConversation.members[thisConversation.members.length - 1] !==
+        session.username
       ) {
-        thisConversation.members.push("You");
+        thisConversation.members.push(session.username);
       }
       setMessages(thisConversation.messages);
       setMembers(thisConversation.members);
@@ -59,7 +61,6 @@ export default function Message({ socket }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setDMInputValue("");
     const res = await fetch(`/api/conversations/${conversationId}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -67,9 +68,14 @@ export default function Message({ socket }) {
     });
     if (res.ok) {
       const message = await res.json();
+      setDMInputValue("");
+      setChatErrors([]);
     } else {
-      const errors = await res.json();
-      console.log(errors);
+      const data = await res.json();
+      if (data.csrf_token) {
+        data.csrf_token += " Please send your message again.";
+      }
+      setChatErrors(Object.values(data));
     }
   };
 
@@ -79,13 +85,14 @@ export default function Message({ socket }) {
       const latestMessage = messages[messages.length - 1];
       const now = Date.now();
       const time = new Date(latestMessage["updated_at"]).getTime();
+      console.log(now - time);
       if (
         now - time < 100 &&
         session.id != latestMessage.user.id &&
         !document.hidden
       ) {
         const newMessage = document.getElementById(
-          `direct-message-content-${latestMessage.id}`
+          `direct-message-content-${latestMessage.id}`,
         );
         newMessage.style.animation = "blinker 2s linear 1";
       }
@@ -101,8 +108,8 @@ export default function Message({ socket }) {
               ? "You, "
               : `${member}, `
             : session.username === member
-            ? "you "
-            : member
+            ? "You"
+            : member,
         )}
       </h1>
       {messages.map((message, idx) => (
@@ -130,6 +137,11 @@ export default function Message({ socket }) {
           </div>
         </div>
       ))}
+      <ul className="errors">
+        {chatErrors.map((error, idx) => (
+          <li key={idx}>{error}</li>
+        ))}
+      </ul>
       <form onSubmit={handleSubmit} className="dm-chat-form">
         <input
           className="dm-input"

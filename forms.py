@@ -20,4 +20,7 @@ class LoginForm(FlaskForm):
 
 
 class DirectMessageForm(FlaskForm):
-    content = StringField("Content", [InputRequired(), Length(max=2000)])
+    content = StringField(
+        "Content",
+        [InputRequired(message="Cannot send an empty message"), Length(max=2000)],
+    )

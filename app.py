@@ -145,7 +145,7 @@ def send_dm(conversation_id):
     if form.validate_on_submit():
         content = form.data["content"]
         user = current_user
-        new_dm = DirectMessage(
+        new_dm = DirectMessage(  # type: ignore[call-arg]
             content=content, user=user, conversation_id=conversation_id
         )
         db.session.add(new_dm)
@@ -155,8 +155,13 @@ def send_dm(conversation_id):
             "dm", new_dm.to_dict(), namespace="/", to=f"conversation/{conversation_id}"
         )
         return new_dm.to_dict(), 201
-    print(form.errors)
-    return {"errors": form.errors}, 500
+    errors = {**form.errors}
+    if "content" in form.errors and "csrf_token" in form.errors.keys():
+        print("deleting...")
+        del errors["csrf_token"]
+        return errors, 400
+    print(errors)
+    return errors, 403
 
 
 @app.route("/api/users/search")
