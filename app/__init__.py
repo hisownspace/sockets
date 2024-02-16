@@ -35,10 +35,14 @@ def load_user(user_id):
 def authenticate():
     if current_user.is_authenticated:
         return current_user.to_dict(), 200
-    return {"errors": "Unauthorized"}, 401
+    return { "errors": ["Unauthorized"] }, 401
+
+@app.route("/api/auth/unauthorized")
+def unauthorized():
+    return { "errors": ["Unauthorized!"] }
 
 
-@app.route("/api/login", methods=["POST"])
+@app.route("/api/auth/login", methods=["POST"])
 def login():
     form = LoginForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
@@ -53,7 +57,7 @@ def login():
 @app.route("/api/logout")
 def logout():
     logout_user()
-    return {"Message": "Logout Successful!"}
+    return {"message": "Logout Successful!"}
 
 
 @app.route("/api/users")
@@ -76,13 +80,16 @@ def get_single_room(roomId):
 
 @app.route("/api/conversations")
 def get_all_conversations():
-    my_conversations = current_user.conversations
-    print(current_user)
-    return [conversation.to_dict() for conversation in my_conversations], 200
+    if current_user.is_authenticated:
+        my_conversations = current_user.conversations
+        return [conversation.to_dict() for conversation in my_conversations], 200
+    else:
+        return { "errors": ["Unauthorized!"] }
 
 
 @app.route("/api/conversations", methods=["POST"])
 def create_conversation():
+    print(request.get_json())
     users = request.get_json()["users"]
     user_objs = []
     for user in users:
