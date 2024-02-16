@@ -38,7 +38,7 @@ def authenticate():
     return {"errors": "Unauthorized"}, 401
 
 
-@app.route("/api/login", methods=["GET", "POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
     form = LoginForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
