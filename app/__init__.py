@@ -4,12 +4,12 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_wtf.csrf import generate_csrf
-from config import Config
-from models import db, User, Message, Room, Conversation, DirectMessage
-from forms import LoginForm, DirectMessageForm
+from .config import Config
+from .models import db, User, Message, Room, Conversation, DirectMessage
+from .forms import LoginForm, DirectMessageForm
 from flask_socketio import emit
-from sockets import socketio
-from seeders import seed_commands
+from .sockets import socketio
+from .seeders import seed_commands
 
 app = Flask(__name__, static_folder="./react-app/dist", static_url_path="/")
 app.config.from_object(Config)

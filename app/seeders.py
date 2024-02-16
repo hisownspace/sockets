@@ -1,7 +1,7 @@
 import os
 from sqlalchemy.sql import text
 from flask.cli import AppGroup
-from models import db, User, Room
+from .models import db, User, Room
 
 environment = os.environ.get("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")

@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from flask_socketio import SocketIO, emit, join_room
 from flask_login import current_user
-from models import db, Message, Room, User
+from .models import db, Message, Room, User
 
 
 environment = os.environ.get("FLASK_ENV")
