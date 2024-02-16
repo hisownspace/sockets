@@ -7,21 +7,6 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-suffixes = {
-    "11": "th",
-    "12": "th",
-    "13": "th",
-    "1": "st",
-    "2": "nd",
-    "3": "rd",
-    "4": "th",
-    "5": "th",
-    "6": "th",
-    "7": "th",
-    "8": "th",
-    "9": "th",
-    "0": "th",
-}
 
 metadata = MetaData(
     naming_convention={
