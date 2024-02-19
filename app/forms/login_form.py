@@ -1,8 +1,7 @@
-from wtforms import StringField, PasswordField, ValidationError
-from wtforms.validators import InputRequired, Length
 from flask_wtf import FlaskForm
-from models import User
-
+from wtforms import StringField, PasswordField
+from wtforms.validators import InputRequired, Length, ValidationError
+from ..models import User
 
 class LoginForm(FlaskForm):
     username = StringField("Username: ", [InputRequired()])
@@ -18,9 +17,3 @@ class LoginForm(FlaskForm):
         if user and not user.check_password(field.data):
             raise ValidationError("Invalid username/password combo")
 
-
-class DirectMessageForm(FlaskForm):
-    content = StringField(
-        "Content",
-        [InputRequired(message="Cannot send an empty message"), Length(max=2000)],
-    )

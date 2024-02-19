@@ -33,7 +33,7 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/login", {
+    const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -63,7 +63,7 @@ export default function Login() {
   const handleLogout = (e) => {
     e.preventDefault();
     (async () => {
-      const res = await fetch("/api/logout");
+      const res = await fetch("/api/auth/logout");
       if (res.ok) {
         setSession({});
         navigate("/");
