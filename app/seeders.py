@@ -6,19 +6,9 @@ from flask.cli import AppGroup
 from .models import db, User, Room, Message
 
 
-def random_date_2024():
+def random_time_last_week():
     # start_date = datetime(2024, 1, 1)
-    start_date = datetime.now() - timedelta(7)
-    end_date = datetime.now()
-    time_elapsed = end_date - start_date
-    random_time = time_elapsed * random()
-    random_date = start_date + random_time
-    return random_date
-
-
-
-def random_date_2024():
-    start_date = datetime(2024, 1, 1)
+    start_date = datetime.now() - timedelta(30)
     end_date = datetime.now()
     time_elapsed = end_date - start_date
     random_time = time_elapsed * random()
@@ -176,24 +166,24 @@ def seed_messages(users, rooms):
         user=users["wash"],
     )
     message_19 = Message( # type: ignore
-        content="No power in the 'verse can stop me!",
+        content="Stegosaurus: Yes. Yes, this is a fertile land, and we will thrive. We will rule over all this land, and we will call it... 'This Land.'",
         room=rooms["serenity"],
-        user=users["river"],
+        user=users["wash"],
     )
     message_20 = Message( # type: ignore
-        content="No power in the 'verse can stop me!",
+        content="Allosaurus: I think we should call it 'your grave!'",
         room=rooms["serenity"],
         user=users["river"],
     )
     message_21 = Message( # type: ignore
-        content="No power in the 'verse can stop me!",
+        content="Stegosaurus: Ah, curse your sudden but inevitable betrayal!",
         room=rooms["serenity"],
-        user=users["river"],
+        user=users["wash"],
     )
     message_22 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
-        user=users["river"],
+        user=users["wash"],
     )
     message_23 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
@@ -239,10 +229,10 @@ def seed_messages(users, rooms):
     ]
 
     for idx, message in enumerate(messages):
-        random_date = random_date_2024()
+        random_date = random_time_last_week()
         message.created_at = random_date
-        message.created_at = random_date
-        if idx == 17:
+        message.updated_at = random_date
+        if idx in {17, 19, 20}:
             message.created_at = messages[idx-1].created_at + timedelta(seconds=30)
         db.session.add(message)
 

@@ -20,24 +20,24 @@ export default function Room() {
     };
     if (idx + 1 < messages.length) {
       const tmd = new Date(messages[idx].created_at);
-      const nmd = new Date(messages[idx + 1].created_at);
       if (idx == 0) {
         return tmd.toLocaleDateString("en-US", options);
       }
+      const pmd = new Date(messages[idx - 1].created_at);
       if (
-        tmd.getYear() !== nmd.getYear() ||
-        tmd.getMonth() !== nmd.getMonth() ||
-        tmd.getDate() !== nmd.getDate()
+        tmd.getYear() !== pmd.getYear() ||
+        tmd.getMonth() !== pmd.getMonth() ||
+        tmd.getDate() !== pmd.getDate()
       ) {
         const today = new Date();
         if (
-          today.getYear() === nmd.getYear() &&
-          today.getMonth() === nmd.getMonth() &&
-          today.getDate() === nmd.getDate()
+          today.getYear() === pmd.getYear() &&
+          today.getMonth() === pmd.getMonth() &&
+          today.getDate() === pmd.getDate()
         ) {
           return "Today";
         }
-        return nmd.toLocaleDateString("en-US", options);
+        return tmd.toLocaleDateString("en-US", options);
       } else {
         return false;
       }
@@ -68,6 +68,13 @@ export default function Room() {
         const data = await res.json();
         setRoomName(data.name);
         setMessages(data.messages);
+        setMessages((msgs) => {
+          return msgs.toSorted((a, b) => {
+            const fd = new Date(a.created_at);
+            const sd = new Date(b.created_at);
+            return fd > sd ? 1 : -1;
+          });
+        });
       } else {
         const errors = await res.json();
         console.log(errors);
@@ -148,37 +155,33 @@ export default function Room() {
           <h1>Welcome to {roomName}!</h1>
         </div>
         <div className="message-container">
-          {messages
-            .toSorted((a, b) =>
-              a.created_at.getTime() > b.created_at.getTime() ? 1 : -1,
-            )
-            .map((message, idx) => (
-              <div key={idx} className="chat-message">
-                {newDay(idx) ? (
-                  <div className="new-day-container">
-                    <span>{newDay(idx)}</span>
-                  </div>
-                ) : null}
-                <div
-                  className="message-content"
-                  id={`message-content-${message.id}`}
-                >
-                  {message.content}
+          {messages.map((message, idx) => (
+            <div key={idx} className="chat-message">
+              {newDay(idx) ? (
+                <div className="new-day-container">
+                  <span>{newDay(idx)}</span>
                 </div>
-                <div className="message-user">
-                  <span>
-                    <span style={{ color: message.user.theme }}>
-                      {message.user.username == session.username
-                        ? "You"
-                        : message.user.username}
-                    </span>
-                    <span className="timestamp">
-                      {getTime(message.created_at)}
-                    </span>
-                  </span>
-                </div>
+              ) : null}
+              <div
+                className="message-content"
+                id={`message-content-${message.id}`}
+              >
+                {message.content}
               </div>
-            ))}
+              <div className="message-user">
+                <span>
+                  <span style={{ color: message.user.theme }}>
+                    {message.user.username == session.username
+                      ? "You"
+                      : message.user.username}
+                  </span>
+                  <span className="timestamp">
+                    {getTime(message.created_at)}
+                  </span>
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
         <div className="message-input">
           <form className="message-form" onSubmit={sendMessage}>
