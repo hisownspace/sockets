@@ -16,6 +16,16 @@ def random_date_2024():
     return random_date
 
 
+
+def random_date_2024():
+    start_date = datetime(2024, 1, 1)
+    end_date = datetime.now()
+    time_elapsed = end_date - start_date
+    random_time = time_elapsed * random()
+    random_date = start_date + random_time
+    return random_date
+
+
 environment = os.environ.get("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 
