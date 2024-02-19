@@ -12,20 +12,31 @@ export default function Room() {
   const [roomName, setRoomName] = useState("");
 
   const newDay = (idx) => {
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
     if (idx + 1 < messages.length) {
       const tmd = new Date(messages[idx].created_at);
       const nmd = new Date(messages[idx + 1].created_at);
+      if (idx == 0) {
+        return tmd.toLocaleDateString("en-US", options);
+      }
       if (
         tmd.getYear() !== nmd.getYear() ||
         tmd.getMonth() !== nmd.getMonth() ||
         tmd.getDate() !== nmd.getDate()
       ) {
-        const options = {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        };
+        const today = new Date();
+        if (
+          today.getYear() === nmd.getYear() &&
+          today.getMonth() === nmd.getMonth() &&
+          today.getDate() === nmd.getDate()
+        ) {
+          return "Today";
+        }
         return nmd.toLocaleDateString("en-US", options);
       } else {
         return false;
