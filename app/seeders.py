@@ -1,14 +1,14 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from random import random
-from app.models.messages import Message
 from sqlalchemy.sql import text
 from flask.cli import AppGroup
-from .models import db, User, Room
+from .models import db, User, Room, Message
 
 
 def random_date_2024():
-    start_date = datetime(2024, 1, 1)
+    # start_date = datetime(2024, 1, 1)
+    start_date = datetime.now() - timedelta(7)
     end_date = datetime.now()
     time_elapsed = end_date - start_date
     random_time = time_elapsed * random()
@@ -75,132 +75,131 @@ def undo_users():
 
 
 def seed_messages(users, rooms):
-    message_1 = Message(
+    message_1 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_2 = Message(
+    message_2 = Message( # type: ignore
         content="We have done the impossible, and that makes us mighty.",
         room=rooms["persephone"],
         user=users["mal"],
     )
-    message_3 = Message(
+    message_3 = Message( # type: ignore
         content="I believe that woman's plannin' to shoot me again.",
         room=rooms["serenity"],
         user=users["mal"],
     )
-    message_4 = Message(
+    message_4 = Message( # type: ignore
         content="I'm very sorry if she tipped off anyone about your cunningly concealed herd of cows.",
         room=rooms["persephone"],
         user=users["simon"],
     )
-    message_5 = Message(
+    message_5 = Message( # type: ignore
         content="This place gives me an uncomfortableness...",
         room=rooms["miranda"],
         user=users["jayne"],
     )
-    message_6 = Message(
+    message_6 = Message( # type: ignore
         content="It's been a big day, what with the abduction and all.",
         room=rooms["serenity"],
         user=users["simon"],
     )
-    message_7 = Message(
+    message_7 = Message( # type: ignore
         content="It's good to be home",
         room=rooms["serenity"],
         user=users["book"],
     )
-    message_8 = Message(
+    message_8 = Message( # type: ignore
         content="Someone ever tries to kill you, you try to kill 'em right back!",
         room=rooms["miranda"],
         user=users["mal"],
     )
-    message_9 = Message(
+    message_9 = Message( # type: ignore
         content="Every planet has its own weird customs. About a year before we met, I spent six weeks on a moon where the principal form of recreation was juggling geese. My hand to God. Baby geese. Goslings. They were juggled.",
         room=rooms["persephone"],
         user=users["wash"],
     )
-    message_10 = Message(
+    message_10 = Message( # type: ignore
         content="The hero of Canton, the man they call 'me'.",
         room=rooms["miranda"],
         user=users["jayne"],
     )
-    message_11 = Message(
+    message_11 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["persephone"],
         user=users["kaylee"],
     )
-    message_12 = Message(
+    message_12 = Message( # type: ignore
         content="Sometimes a thing gets broke, can't be fixed.",
         room=rooms["serenity"],
         user=users["kaylee"],
     )
-    message_13 = Message(
+    message_13 = Message( # type: ignore
         content="Two by two, hands of blue... two by two, hands of blue...",
         room=rooms["miranda"],
         user=users["river"],
     )
-    message_14 = Message(
+    message_14 = Message( # type: ignore
         content="They don't like it when you shoot at 'em. I worked that out myself.",
         room=rooms["miranda"],
         user=users["mal"],
     )
-    message_15 = Message(
+    message_15 = Message( # type: ignore
         content="Nothing worse than a monster who thinks he's right with God.",
         room=rooms["miranda"],
         user=users["mal"],
     )
-    message_16 = Message(
+    message_16 = Message( # type: ignore
         content="It's just an object. It doesn't mean what you think.",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_17 = Message(
-        content="You are such a boob.",
+    message_17 = Message( # type: ignore
+        content="Something ain't right...",
         room=rooms["serenity"],
-        user=users["river"],
+        user=users["zoe"],
     )
-    message_18 = Message(
+    message_18 = Message( # type: ignore
+        content="Sweetie, we're crooks, if everything was right, we'd be in jail.",
+        room=rooms["serenity"],
+        user=users["wash"],
+    )
+    message_19 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_19 = Message(
+    message_20 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_20 = Message(
+    message_21 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_21 = Message(
+    message_22 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_22 = Message(
+    message_23 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_23 = Message(
+    message_24 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_24 = Message(
+    message_25 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
         room=rooms["serenity"],
         user=users["river"],
     )
-    message_25 = Message(
-        content="No power in the 'verse can stop me!",
-        room=rooms["serenity"],
-        user=users["river"],
-    )
-
     messages = [
         message_1,
         message_2,
@@ -229,10 +228,15 @@ def seed_messages(users, rooms):
         message_25,
     ]
 
-    for message in messages:
+    for idx, message in enumerate(messages):
         random_date = random_date_2024()
         message.created_at = random_date
         message.created_at = random_date
+        if idx == 17:
+            message.created_at = messages[idx-1].created_at + timedelta(seconds=30)
+        db.session.add(message)
+
+    db.session.commit()
 
 
 def undo_messages():
