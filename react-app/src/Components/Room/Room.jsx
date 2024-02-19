@@ -148,33 +148,35 @@ export default function Room() {
           <h1>Welcome to {roomName}!</h1>
         </div>
         <div className="message-container">
-          {messages.map((message, idx) => (
-            <div key={idx} className="chat-message">
-              {newDay(idx) ? (
-                <div className="new-day-container">
-                  <span>{newDay(idx)}</span>
+          {messages
+            .toSorted((a, b) => (a.created_at > b.created_at ? 1 : -1))
+            .map((message, idx) => (
+              <div key={idx} className="chat-message">
+                {newDay(idx) ? (
+                  <div className="new-day-container">
+                    <span>{newDay(idx)}</span>
+                  </div>
+                ) : null}
+                <div
+                  className="message-content"
+                  id={`message-content-${message.id}`}
+                >
+                  {message.content}
                 </div>
-              ) : null}
-              <div
-                className="message-content"
-                id={`message-content-${message.id}`}
-              >
-                {message.content}
-              </div>
-              <div className="message-user">
-                <span>
-                  <span style={{ color: message.user.theme }}>
-                    {message.user.username == session.username
-                      ? "You"
-                      : message.user.username}
+                <div className="message-user">
+                  <span>
+                    <span style={{ color: message.user.theme }}>
+                      {message.user.username == session.username
+                        ? "You"
+                        : message.user.username}
+                    </span>
+                    <span className="timestamp">
+                      {getTime(message.created_at)}
+                    </span>
                   </span>
-                  <span className="timestamp">
-                    {getTime(message.created_at)}
-                  </span>
-                </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
         <div className="message-input">
           <form className="message-form" onSubmit={sendMessage}>
