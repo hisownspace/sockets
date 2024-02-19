@@ -149,7 +149,9 @@ export default function Room() {
         </div>
         <div className="message-container">
           {messages
-            .toSorted((a, b) => (a.created_at > b.created_at ? 1 : -1))
+            .toSorted((a, b) =>
+              a.created_at.getTime() > b.created_at.getTime() ? 1 : -1,
+            )
             .map((message, idx) => (
               <div key={idx} className="chat-message">
                 {newDay(idx) ? (
