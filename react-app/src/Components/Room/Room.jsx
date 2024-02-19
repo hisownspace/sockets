@@ -18,7 +18,7 @@ export default function Room() {
       month: "long",
       day: "numeric",
     };
-    if (idx + 1 < messages.length) {
+    if (idx < messages.length) {
       const tmd = new Date(messages[idx].created_at);
       if (idx == 0) {
         return tmd.toLocaleDateString("en-US", options);
