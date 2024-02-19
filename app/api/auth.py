@@ -5,20 +5,23 @@ from ..models import User
 
 auth_routes = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-@auth_routes.route("/api/auth")
+
+@auth_routes.route("")
 def authenticate():
-    if current_user.is_authenticated: # type: ignore
-        return current_user.to_dict(), 200 # type: ignore
-    return { "errors": ["Unauthorized"] }, 401
+    if current_user.is_authenticated:  # type: ignore
+        return current_user.to_dict(), 200  # type: ignore
+    return {"errors": ["Unauthorized"]}, 401
 
-@auth_routes.route("/api/auth/unauthorized")
+
+@auth_routes.route("/unauthorized")
 def unauthorized():
-    return { "errors": ["Unauthorized!"] }
+    return {"errors": ["Unauthorized!"]}
 
 
-@auth_routes.route("/api/auth/login", methods=["POST"]) # type: ignore
+@auth_routes.route("/login", methods=["POST"])  # type: ignore
 def login():
     form = LoginForm()
+    print(form.data)
     form["csrf_token"].data = request.cookies["csrf_token"]
     if form.validate_on_submit():
         username = form.data["username"]
@@ -28,7 +31,7 @@ def login():
     return form.errors, 401
 
 
-@auth_routes.route("/api/auth/logout")
+@auth_routes.route("/logout")
 def logout():
     logout_user()
     return {"message": "Logout Successful!"}
