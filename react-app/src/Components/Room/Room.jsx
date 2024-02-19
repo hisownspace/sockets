@@ -11,6 +11,41 @@ export default function Room() {
   const { roomId } = useParams();
   const [roomName, setRoomName] = useState("");
 
+  const newDay = (idx) => {
+    if (idx + 1 < messages.length) {
+      const tmd = new Date(messages[idx].created_at);
+      const nmd = new Date(messages[idx + 1].created_at);
+      if (
+        tmd.getYear() !== nmd.getYear() ||
+        tmd.getMonth() !== nmd.getMonth() ||
+        tmd.getDate() !== nmd.getDate()
+      ) {
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        return nmd.toLocaleDateString("en-US", options);
+      } else {
+        return false;
+      }
+    }
+  };
+
+  const getTime = (dateString) => {
+    let date = new Date(dateString);
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    if (minutes < 10) {
+      minutes = "0" + minutes.toString();
+    }
+    let period = hours >= 12 ? "PM" : "AM";
+    hours %= 12;
+    let time = `${hours}:${minutes} ${period}`;
+    return time;
+  };
+
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
   });
@@ -88,7 +123,7 @@ export default function Room() {
         !document.hidden
       ) {
         const newMessage = document.getElementById(
-          `message-content-${latestMessage.id}`
+          `message-content-${latestMessage.id}`,
         );
         newMessage.style.animation = "blinker 2s linear 1";
       }
@@ -104,9 +139,9 @@ export default function Room() {
         <div className="message-container">
           {messages.map((message, idx) => (
             <div key={idx} className="chat-message">
-              {message.new_day ? (
+              {newDay(idx) ? (
                 <div className="new-day-container">
-                  <span>{message.new_day}</span>
+                  <span>{newDay(idx)}</span>
                 </div>
               ) : null}
               <div
@@ -122,7 +157,9 @@ export default function Room() {
                       ? "You"
                       : message.user.username}
                   </span>
-                  <span className="timestamp">{message.created_at}</span>
+                  <span className="timestamp">
+                    {getTime(message.created_at)}
+                  </span>
                 </span>
               </div>
             </div>

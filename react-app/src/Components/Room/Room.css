@@ -16,6 +16,7 @@
 .chat-message {
   display: flex;
   flex-direction: column;
+  width: 76vw;
 }
 
 .message-content {

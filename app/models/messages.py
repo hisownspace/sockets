@@ -1,6 +1,7 @@
 from datetime import datetime
 from .db import db, environment, SCHEMA, add_prefix_for_production
 
+
 class Message(db.Model):
     __tablename__ = "messages"
 
@@ -29,11 +30,6 @@ class Message(db.Model):
             "content": self.content,
             "room": self.room.name,
             "user": self.user.to_dict(),
-            # "created_at": self.created_at.strftime("%a, %b %-d% at %-I:%M %p")
-            # if self.created_at.date() != datetime.today().date()
-            # else self.created_at.strftime("%-I:%M %p"),
-            "created_at": self.created_at
-            if from_room
-            else self.created_at.strftime("%-I:%M %p"),
+            "created_at": str(self.created_at),
             "updated_at": str(self.updated_at),
         }

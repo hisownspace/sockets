@@ -34,31 +34,7 @@ def handle_chat(data):
     room_id = data["room_id"]
     content = data["content"]
     user_id = data["user_id"]
-    latest_message = (
-        Message.query.filter(Message.channel_id == room_id)
-        .order_by(Message.id.desc())
-        .first()
-    )
-    # code to store chat message in database
     new_message = Message(channel_id=room_id, content=content, user_id=user_id)
     db.session.add(new_message)
     db.session.commit()
-    chat_message = new_message.to_dict(from_room=False)
-    if (
-        latest_message is None
-        or latest_message.created_at.date() != new_message.created_at.date()
-    ):
-        chat_message["new_day"] = "Today"
-    # end db code
-
-    # # message formatted to work without database
-    # chat_message = {
-    #     "content": content,
-    #     "user": User.query.get(user_id).to_dict(),
-    #     "created_at": datetime.now().strftime("%-I:%M %p"),
-    #     "new_day": None
-    #     if latest_message.created_at.date() == datetime.now().date()
-    #     else "Today",
-    # }
-    # # end db-less code
-    emit("chat", chat_message, broadcast=True, to=room_id)
+    emit("chat", new_message.to_dict(), broadcast=True, to=room_id)
