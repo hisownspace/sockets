@@ -20,12 +20,17 @@ socketio = SocketIO(cors_allowed_origins=origins, logger=True)
 
 @socketio.on("join")
 def handle_join(room_id):
+    """This socket handles emits that are sent out every time a user joins a
+    room. Now this user will receive emits from the backend whenever other users
+    in that room send a message."""
     print(f"Joining room {room_id}")
     join_room(room_id)
 
 
 @socketio.on("connection")
 def handle_connection(data):
+    """This socket is purely for informative purposes. It prints """
+    print("PRINTING SOCKET CONNECTION DATA:")
     print(data)
 
 

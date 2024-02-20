@@ -7,8 +7,8 @@ from .models import db, User, Room, Message
 
 
 def random_time_last_week():
-    # start_date = datetime(2024, 1, 1)
-    start_date = datetime.now() - timedelta(30)
+    start_date = datetime(2024, 1, 1)
+    # start_date = datetime.now() - timedelta(30)
     end_date = datetime.now()
     time_elapsed = end_date - start_date
     random_time = time_elapsed * random()
@@ -24,9 +24,9 @@ seed_commands = AppGroup("seed")
 
 def seed_rooms():
     rooms = {
-        "serenity": Room(name="Serenity"),
-        "miranda": Room(name="Miranda"),
-        "persephone": Room(name="Persephone"),
+        "serenity": Room(name="Serenity"), # type: ignore
+        "miranda": Room(name="Miranda"), # type: ignore
+        "persephone": Room(name="Persephone"), # type: ignore
     }
     for room in rooms.values():
         db.session.add(room)
@@ -47,15 +47,15 @@ def undo_rooms():
 
 def seed_users():
     users = {
-        "mal": User(username="Mal", password="password", theme="#7B6859"),
-        "zoe": User(username="Zoe", password="password", theme="#ACACA2"),
-        "wash": User(username="Wash", password="password", theme="#C8A680"),
-        "inara": User(username="Inara", password="password", theme="#457E89"),
-        "jayne": User(username="Jayne", password="password", theme="#E76D2D"),
-        "river": User(username="River", password="password", theme="#969249"),
-        "kaylee": User(username="Kaylee", password="password", theme="#A7AF9D"),
-        "simon": User(username="Simon", password="password", theme="#6A9DA1"),
-        "book": User(username="Book", password="password", theme="#7B6859"),
+        "mal": User(username="Mal", password="password", theme="#7B6859"), #type: ignore
+        "zoe": User(username="Zoe", password="password", theme="#ACACA2"), #type: ignore
+        "wash": User(username="Wash", password="password", theme="#C8A680"), #type: ignore
+        "inara": User(username="Inara", password="password", theme="#457E89"), #type: ignore
+        "jayne": User(username="Jayne", password="password", theme="#E76D2D"), #type: ignore
+        "river": User(username="River", password="password", theme="#969249"), #type: ignore
+        "kaylee": User(username="Kaylee", password="password", theme="#A7AF9D"), #type: ignore
+        "simon": User(username="Simon", password="password", theme="#6A9DA1"), #type: ignore
+        "book": User(username="Book", password="password", theme="#7B6859"), #type: ignore
     }
 
     for user in users.values():
@@ -81,29 +81,29 @@ def seed_messages(users, rooms):
         user=users["river"],
     )
     message_2 = Message( # type: ignore
-        content="We have done the impossible, and that makes us mighty.",
-        room=rooms["persephone"],
-        user=users["mal"],
-    )
-    message_3 = Message( # type: ignore
-        content="I believe that woman's plannin' to shoot me again.",
-        room=rooms["serenity"],
-        user=users["mal"],
-    )
-    message_4 = Message( # type: ignore
-        content="I'm very sorry if she tipped off anyone about your cunningly concealed herd of cows.",
+        content="I've never shot anybody before.",
         room=rooms["persephone"],
         user=users["simon"],
     )
+    message_3 = Message( # type: ignore
+        content="I was there son. I'm fair sure you haven't shot anybody yet.",
+        room=rooms["persephone"],
+        user=users["book"],
+    )
+    message_4 = Message( # type: ignore
+        content="This is the captain. We have a little problem with our entry sequence, so we may experience some slight turbulance and then...explode.",
+        room=rooms["serenity"],
+        user=users["mal"],
+    )
     message_5 = Message( # type: ignore
-        content="This place gives me an uncomfortableness...",
-        room=rooms["miranda"],
+        content="We're gonna explode? I don't wanna explode.",
+        room=rooms["serenity"],
         user=users["jayne"],
     )
     message_6 = Message( # type: ignore
-        content="It's been a big day, what with the abduction and all.",
-        room=rooms["serenity"],
-        user=users["simon"],
+        content="This place gives me an uncomfortableness...",
+        room=rooms["miranda"],
+        user=users["jayne"],
     )
     message_7 = Message( # type: ignore
         content="It's good to be home",
@@ -111,24 +111,24 @@ def seed_messages(users, rooms):
         user=users["book"],
     )
     message_8 = Message( # type: ignore
-        content="Someone ever tries to kill you, you try to kill 'em right back!",
-        room=rooms["miranda"],
-        user=users["mal"],
-    )
-    message_9 = Message( # type: ignore
         content="Every planet has its own weird customs. About a year before we met, I spent six weeks on a moon where the principal form of recreation was juggling geese. My hand to God. Baby geese. Goslings. They were juggled.",
-        room=rooms["persephone"],
+        room=rooms["miranda"],
         user=users["wash"],
     )
-    message_10 = Message( # type: ignore
+    message_9 = Message( # type: ignore
         content="The hero of Canton, the man they call 'me'.",
-        room=rooms["miranda"],
+        room=rooms["persephone"],
         user=users["jayne"],
     )
-    message_11 = Message( # type: ignore
+    message_10 = Message( # type: ignore
         content="No power in the 'verse can stop me!",
-        room=rooms["persephone"],
+        room=rooms["miranda"],
         user=users["kaylee"],
+    )
+    message_11 = Message( # type: ignore
+        content="Someone ever tries to kill you, you try to kill 'em right back!",
+        room=rooms["persephone"],
+        user=users["mal"],
     )
     message_12 = Message( # type: ignore
         content="Sometimes a thing gets broke, can't be fixed.",
@@ -173,7 +173,7 @@ def seed_messages(users, rooms):
     message_20 = Message( # type: ignore
         content="Allosaurus: I think we should call it 'your grave!'",
         room=rooms["serenity"],
-        user=users["river"],
+        user=users["wash"],
     )
     message_21 = Message( # type: ignore
         content="Stegosaurus: Ah, curse your sudden but inevitable betrayal!",
@@ -181,24 +181,24 @@ def seed_messages(users, rooms):
         user=users["wash"],
     )
     message_22 = Message( # type: ignore
-        content="No power in the 'verse can stop me!",
-        room=rooms["serenity"],
-        user=users["wash"],
+        content="Ten percent of nothin’ is … let me do the math here … nothin’ into nothin’ … carry the nothin’ … ",
+        room=rooms["persephone"],
+        user=users["jayne"],
     )
     message_23 = Message( # type: ignore
-        content="No power in the 'verse can stop me!",
-        room=rooms["serenity"],
-        user=users["river"],
+        content="Jayne, your mouth is talking. You might wanna look to that.",
+        room=rooms["persephone"],
+        user=users["mal"],
     )
     message_24 = Message( # type: ignore
-        content="No power in the 'verse can stop me!",
-        room=rooms["serenity"],
-        user=users["river"],
+        content="Here’s a little concept I’ve been working on. Why don’t we shoot her first?",
+        room=rooms["miranda"],
+        user=users["jayne"],
     )
     message_25 = Message( # type: ignore
-        content="No power in the 'verse can stop me!",
-        room=rooms["serenity"],
-        user=users["river"],
+        content="It is her turn",
+        room=rooms["miranda"],
+        user=users["wash"],
     )
     messages = [
         message_1,
@@ -232,7 +232,7 @@ def seed_messages(users, rooms):
         random_date = random_time_last_week()
         message.created_at = random_date
         message.updated_at = random_date
-        if idx in {17, 19, 20}:
+        if idx in {2, 4, 17, 19, 20, 22, 24}:
             message.created_at = messages[idx-1].created_at + timedelta(seconds=30)
         db.session.add(message)
 
