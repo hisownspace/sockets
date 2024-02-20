@@ -4,3 +4,4 @@ instance/*
 react-app/node_modules
 .jython_cache
 **/__pycache__
+**/__pycache__/
