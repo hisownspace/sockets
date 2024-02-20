@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 
 import os
-environment = os.getenv("FLASK_ENV")
+environment = os.environ.get("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 
 
@@ -67,7 +67,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_user_conversations_user_id_users')),
     sa.PrimaryKeyConstraint('user_id', 'conversation_id', name=op.f('pk_user_conversations'))
     )
-    print("=======================+>>>>>>>>>>> ", SCHEMA)
     if environment == "production":
         op.execute(f"ALTER TABLE users SET SCHEMA {SCHEMA};")
         op.execute(f"ALTER TABLE direct_messages SET SCHEMA {SCHEMA};")

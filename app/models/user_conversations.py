@@ -3,7 +3,6 @@ from .db import db, SCHEMA, environment, add_prefix_for_production
 
 user_conversations = db.Table(
     "user_conversations",
-    db.Model.metadata,
     db.Column(
         "user_id",
         db.Integer,
