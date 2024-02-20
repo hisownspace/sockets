@@ -53,6 +53,9 @@ export default function Room() {
     }
     let period = hours >= 12 ? "PM" : "AM";
     hours %= 12;
+    if (hours === 0) {
+      hours = 12;
+    }
     let time = `${hours}:${minutes} ${period}`;
     return time;
   };
