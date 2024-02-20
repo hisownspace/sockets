@@ -6,6 +6,7 @@ import { socket } from "../../context/socket";
 
 export default function Room() {
   const [messages, setMessages] = useState([]);
+  const [errors, setErrors] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const { session } = useContext(SessionContext);
   const { roomId } = useParams();
@@ -62,9 +63,10 @@ export default function Room() {
 
   useEffect(() => {
     window.scrollTo(0, document.body.scrollHeight);
-  });
+  }, [messages]);
 
   useEffect(() => {
+    setErrors("");
     (async () => {
       const res = await fetch(`/api/rooms/${roomId}`);
       if (res.ok) {
@@ -88,6 +90,11 @@ export default function Room() {
 
     const onRoomMessage = (chat) => {
       console.log("emitting chat");
+      if (chat.errors) {
+        console.log("There was an error....");
+        setErrors(chat.errors);
+        return;
+      }
       setMessages((messages) => [...messages, chat]);
       console.log(chat);
       if (session.id != chat.user.id && !document.hasFocus()) {
@@ -124,6 +131,7 @@ export default function Room() {
 
   const sendMessage = (e) => {
     e.preventDefault();
+    setErrors("");
     socket.emit("chat", {
       user: session.username,
       user_id: session.id,
@@ -187,6 +195,7 @@ export default function Room() {
           ))}
         </div>
         <div className="message-input">
+          <ul className="errors">{errors ? <li>{errors}</li> : null}</ul>
           <form className="message-form" onSubmit={sendMessage}>
             <input value={messageInput} onChange={updateMessageInput} />
             <button type="submit">Send</button>

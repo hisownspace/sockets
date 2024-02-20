@@ -12,11 +12,13 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!isOpen) {
       setInputValue("");
       setSearchedUsers([]);
+      setError("");
     }
   }, [isOpen]);
 
@@ -37,6 +39,7 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedUsers.length) {
+      setError("Conversations must include at least one person.");
       return;
     }
     onClose();
@@ -65,7 +68,7 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
     setInputValue(e.target.value);
     if (e.target.value.length > 0) {
       const searchUsers = users.filter((user) =>
-        user.username.toLowerCase().startsWith(e.target.value.toLowerCase())
+        user.username.toLowerCase().startsWith(e.target.value.toLowerCase()),
       );
       setSearchedUsers(searchUsers);
     } else {
@@ -101,6 +104,9 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
     <div className="new-dm-modal">
       <div id="modal-background" onClick={onClose} />
       <div id="modal-content">
+        <ul className="errors">
+          <li>{error}</li>
+        </ul>
         <form className="new-dm-form" onSubmit={handleSubmit}>
           <input
             className="new-dm-button"
@@ -133,6 +139,6 @@ export default function NewDirectMessageModal({ isOpen, onClose }) {
         </form>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

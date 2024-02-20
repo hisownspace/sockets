@@ -26,20 +26,18 @@ def handle_join(room_id):
     print(f"Joining room {room_id}")
     join_room(room_id)
 
-
-@socketio.on("connection")
-def handle_connection(data):
-    """This socket is purely for informative purposes. It prints """
-    print("PRINTING SOCKET CONNECTION DATA:")
-    print(data)
-
-
 @socketio.on("chat")
 def handle_chat(data):
     room_id = data["room_id"]
     content = data["content"]
     user_id = data["user_id"]
-    new_message = Message(channel_id=room_id, content=content, user_id=user_id)
-    db.session.add(new_message)
-    db.session.commit()
-    emit("chat", new_message.to_dict(), broadcast=True, to=room_id)
+    if not content:
+        print("in error block")
+        emit("chat", { "errors": "Cannot send an empty message" }, broadcast=False, to=room_id)
+    elif len(content) > 2000:
+        emit("chat", { "errors": "Messages must be less than 2000 characters." }, broadcast=False, to=room_id)
+    else:
+        new_message = Message(channel_id=room_id, content=content, user_id=user_id)
+        db.session.add(new_message)
+        db.session.commit()
+        emit("chat", new_message.to_dict(), broadcast=True, to=room_id)
