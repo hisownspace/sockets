@@ -10,8 +10,8 @@ if environment == "development":
     origins = "*"
 else:
     origins = [
-        "http://websockets-testing.onrender.com",
-        "https://websockets-testing.onrender.com",
+        "http://serenity-chat.onrender.com",
+        "https://serenity-chat.onrender.com",
     ]
 
 
