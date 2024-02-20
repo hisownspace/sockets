@@ -9,7 +9,7 @@ from .sockets import socketio
 from .seeders import seed_commands
 from .api import auth_routes, user_routes, room_routes, conversation_routes
 
-app = Flask(__name__, static_folder="./react-app/dist", static_url_path="/")
+app = Flask(__name__, static_folder="../react-app/dist", static_url_path="/")
 app.config.from_object(Config)
 db.init_app(app)
 Migrate(app, db)
@@ -57,7 +57,6 @@ def react_root(path):
     react builds in the production environment for favicon
     or index.html requests
     """
-    print("testing")
     if path == "favicon.ico":
         return app.send_from_directory("public", "favicon.ico")
     return app.send_static_file("index.html")
