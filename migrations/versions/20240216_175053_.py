@@ -8,6 +8,10 @@ Create Date: 2024-02-16 17:50:53.448460
 from alembic import op
 import sqlalchemy as sa
 
+import os
+environment = os.environ.get("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
+
 
 # revision identifiers, used by Alembic.
 revision = 'ced8cb83fde4'
@@ -63,6 +67,14 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_user_conversations_user_id_users')),
     sa.PrimaryKeyConstraint('user_id', 'conversation_id', name=op.f('pk_user_conversations'))
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE users SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE direct_messages SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE messages SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE user_conversations SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE rooms SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE conversations SET SCHEMA {SCHEMA};")
+
     # ### end Alembic commands ###
 
 
