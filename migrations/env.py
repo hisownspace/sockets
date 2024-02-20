@@ -7,7 +7,7 @@ from sqlalchemy import text
 from alembic import context
 import os
 
-environment = os.environ.get("FLASK_ENV")
+environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 
 # this is the Alembic Config object, which provides
