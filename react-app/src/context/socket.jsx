@@ -9,5 +9,5 @@ console.log(URL);
 
 export const socket = io(URL, {
   // autoConnect: false,
-  transports: ["websocket"],
+  transports: ["websocket", "polling"],
 });
