@@ -1,1 +1,3 @@
 instance/*
+react-app/*
+!react-app/dist/*
