@@ -1,4 +1,4 @@
-FROM python:3.9-alpine
+FROM python:3.9.18-alpine3.18
 
 WORKDIR /www/var
 
@@ -6,9 +6,10 @@ COPY requirements.txt .
 
 RUN apk add python3-dev musl-dev postgresql-dev
 
-ARG SECRET_KEY
-ARG FLASK_ENV
 ARG DATABASE_URL
+ARG FLASK_ENV
+ARG SCHEMA
+ARG SECRET_KEY
 ARG VIRTUAL_ENV
 
 RUN pip install uv
