@@ -22,12 +22,16 @@ socketio = SocketIO(cors_allowed_origins=origins, logger=True)
 def handle_join(room_id):
     """This socket handles emits that are sent out every time a user joins a
     room. Now this user will receive emits from the backend whenever other users
-    in that room send a message."""
+    in that room send a message"""
     print(f"Joining room {room_id}")
     join_room(room_id)
 
 @socketio.on("chat")
 def handle_chat(data):
+    """This socket handles emits for user submitted messages. There is basic
+    error handling for length. If the message is with the required length
+    requirements, the message is broadcasted to all users currently in
+    the room from which the message was sent"""
     room_id = data["room_id"]
     content = data["content"]
     user_id = data["user_id"]

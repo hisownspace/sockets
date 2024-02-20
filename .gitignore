@@ -3,3 +3,4 @@ instance/*
 .venv
 react-app/node_modules
 .jython_cache
+**/__pycache__
