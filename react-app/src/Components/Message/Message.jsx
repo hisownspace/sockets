@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { SessionContext } from "../../context/session";
 
 export default function Message({ socket }) {
-  const { session } = useContext(SessionContext);
+  const { session, setSession } = useContext(SessionContext);
   const navigate = useNavigate();
   const [dmInputValue, setDMInputValue] = useState("");
   const { conversationId } = useParams();
@@ -29,8 +29,6 @@ export default function Message({ socket }) {
       (conversation) => conversation.id == conversationId,
     );
     if (thisConversation) {
-      console.log(thisConversation.members);
-      console.log(session.username);
       // if (!thisConversation.members.includes(session.username)) {
       //   navigate("/");
       // }
@@ -45,11 +43,10 @@ export default function Message({ socket }) {
       }
       setMessages(thisConversation.messages);
       setMembers(thisConversation.members);
-      console.log(thisConversation);
-    } else {
+    } else if (session.conversations) {
       navigate("/1");
     }
-  }, [conversationId, session, navigate]);
+  }, [session]);
 
   const handleChange = (e) => {
     setDMInputValue(e.target.value);

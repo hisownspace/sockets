@@ -35,6 +35,8 @@ function App() {
     const convo_id = e.target.data.convo_id;
     const id = e.target.data.message_id;
     console.log(id);
+    console.log(convo_id);
+    console.log(`/conversations/${convo_id}`);
     navigate(`/conversations/${convo_id}`, { state: id });
     window.scrollTo(0, document.body.scrollHeight);
   };
@@ -46,11 +48,18 @@ function App() {
 
     const onDirectMessage = (chat) => {
       const conversation = session.conversations?.find(
-        (convo) => convo.id == chat.conversation_id
+        (convo) => convo.id == chat.conversation_id,
       );
       const convoIdx = session.conversations?.indexOf(
-        (convo) => convo.id == chat.conversation_id
+        (convo) => convo.id == chat.conversation_id,
       );
+      (async () => {
+        const res = await fetch("/api/conversations");
+        if (res.ok) {
+          const conversations = await res.json();
+          setSession({ ...session, conversations });
+        }
+      })();
 
       const newSession = { ...session };
 

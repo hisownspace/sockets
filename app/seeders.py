@@ -297,6 +297,9 @@ def seed_all():
 
 @seed_commands.command("undo")
 def undo_all():
+    undo_direct_messages()
+    undo_user_conversations()
+    undo_conversations()
     undo_rooms()
     undo_users()
     undo_messages()

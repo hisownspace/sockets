@@ -40,6 +40,7 @@ export default function Chat() {
       if (res.ok) {
         const allConversations = await res.json();
         setConversations(allConversations);
+        console.log(allConversations);
       }
     };
 

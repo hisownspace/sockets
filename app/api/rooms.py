@@ -9,8 +9,8 @@ def get_all_rooms():
     return [room.to_dict() for room in all_rooms], 200
 
 
-@room_routes.route("/<int:roomId>")
-def get_single_room(roomId):
-    room = Room.query.get(roomId)
+@room_routes.route("/<int:room_id>")
+def get_single_room(room_id):
+    room = Room.query.get(room_id)
     return room.to_dict(), 200
 

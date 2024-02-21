@@ -32,9 +32,9 @@ export default function Room() {
       ) {
         const today = new Date();
         if (
-          today.getYear() === pmd.getYear() &&
-          today.getMonth() === pmd.getMonth() &&
-          today.getDate() === pmd.getDate()
+          today.getYear() === tmd.getYear() &&
+          today.getMonth() === tmd.getMonth() &&
+          today.getDate() === tmd.getDate()
         ) {
           return "Today";
         }
