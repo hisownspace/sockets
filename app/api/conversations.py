@@ -47,6 +47,10 @@ def create_conversation():
 
 @conversation_routes.route("/<int:conversation_id>/messages", methods=["POST"])
 def send_dm(conversation_id):
+    """This route handles a request from a user and returns an http response.
+    It also emits to the dm listener, so other users in the conversation
+    immediately receive the message. One benefit of structuring your data flow
+    this way is that it allows access to wtforms validators."""
     form = DirectMessageForm()
 
     form["csrf_token"].data = request.cookies["csrf_token"]

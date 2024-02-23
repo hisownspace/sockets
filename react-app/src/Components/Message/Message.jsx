@@ -29,9 +29,6 @@ export default function Message({ socket }) {
       (conversation) => conversation.id == conversationId,
     );
     if (thisConversation) {
-      // if (!thisConversation.members.includes(session.username)) {
-      //   navigate("/");
-      // }
       thisConversation.members = thisConversation.members.filter(
         (member) => member != session.username,
       );
@@ -77,12 +74,10 @@ export default function Message({ socket }) {
   };
 
   useEffect(() => {
-    console.log(messages);
     if (messages.length) {
       const latestMessage = messages[messages.length - 1];
       const now = Date.now();
       const time = new Date(latestMessage["updated_at"]).getTime();
-      console.log(now - time);
       if (
         now - time < 100 &&
         session.id != latestMessage.user.id &&

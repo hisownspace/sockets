@@ -24,7 +24,6 @@ function App() {
       } else {
         console.log(await res.json());
         setLoaded(false);
-        // return navigate("/");
       }
       return () => setLoaded(false);
     })();
@@ -34,9 +33,6 @@ function App() {
     window.focus();
     const convo_id = e.target.data.convo_id;
     const id = e.target.data.message_id;
-    console.log(id);
-    console.log(convo_id);
-    console.log(`/conversations/${convo_id}`);
     navigate(`/conversations/${convo_id}`, { state: id });
     window.scrollTo(0, document.body.scrollHeight);
   };
@@ -67,7 +63,6 @@ function App() {
       newSession.conversations[convoIdx] = conversation;
 
       setSession(newSession);
-      console.log(chat);
       if (chat.user.username !== session.username) {
         addNotification({
           title: chat.members

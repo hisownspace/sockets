@@ -96,7 +96,6 @@ export default function Room() {
         return;
       }
       setMessages((messages) => [...messages, chat]);
-      console.log(chat);
       if (session.id != chat.user.id && !document.hasFocus()) {
         addNotification({
           title: chat.room,

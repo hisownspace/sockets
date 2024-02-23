@@ -31,7 +31,6 @@ export default function Chat() {
           (convo) => convo.messages.length,
         );
         setConversations(allConversations);
-        console.log(allConversations);
       }
     })();
 
@@ -40,7 +39,6 @@ export default function Chat() {
       if (res.ok) {
         const allConversations = await res.json();
         setConversations(allConversations);
-        console.log(allConversations);
       }
     };
 
@@ -53,7 +51,6 @@ export default function Chat() {
 
   const newConversation = (e) => {
     e.preventDefault();
-    console.log("Open modal");
     setOpen(true);
   };
 
