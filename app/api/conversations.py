@@ -8,6 +8,8 @@ conversation_routes = Blueprint("conversations", __name__, url_prefix="/api/conv
 
 @conversation_routes.route("")
 def get_all_conversations():
+    """Returns a response object with all of the DM conversations that the
+    current user is a part of."""
     if current_user.is_authenticated: # type: ignore
         my_conversations = current_user.conversations # type: ignore
         return [conversation.to_dict() for conversation in my_conversations], 200
@@ -17,7 +19,9 @@ def get_all_conversations():
 
 @conversation_routes.route("", methods=["POST"])
 def create_conversation():
-    print(request.get_json())
+    """Handles a request for the creation of a conversation. It is not connected
+    to a socket, so the other users in the conversation are only informed of the
+    new conversation when a message is created in the conversation."""
     users = request.get_json()["users"]
     user_objs = []
     for user in users:
