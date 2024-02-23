@@ -1,5 +1,7 @@
 .chat-room-container {
   margin-bottom: 25px;
+  position: relative;
+  left: 200px;
 }
 
 .message-user {

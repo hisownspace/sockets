@@ -1,5 +1,7 @@
 .dm-container {
   min-width: 67vw;
+  position: relative;
+  left: 200px;
 }
 
 .dm-chat-form {
