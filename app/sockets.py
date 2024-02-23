@@ -29,7 +29,7 @@ def handle_join(room_id):
 @socketio.on("chat")
 def handle_chat(data):
     """This socket handles emits for user submitted messages. There is basic
-    error handling for length. If the message is with the required length
+    error handling for length. If the message is within the required length
     requirements, the message is broadcasted to all users currently in
     the room from which the message was sent"""
     room_id = data["room_id"]
