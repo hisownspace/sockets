@@ -20,7 +20,7 @@ RUN uv pip install psycopg2
 
 COPY . .
 
-RUN flask db upgrade
+RUN uv flask db upgrade
 RUN flask seed all
 
 CMD gunicorn --worker-class eventlet -w 1 app:app
