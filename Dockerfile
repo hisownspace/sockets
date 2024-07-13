@@ -20,7 +20,7 @@ RUN uv pip install psycopg2
 
 COPY . .
 
-RUN source /usr/local/.venv/bin/activate
+RUN source .venv/bin/activate
 
 RUN flask db upgrade
 RUN flask seed all
