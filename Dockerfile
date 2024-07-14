@@ -10,13 +10,13 @@ ARG DATABASE_URL
 ARG FLASK_ENV
 ARG SCHEMA
 ARG SECRET_KEY
+ENV VIRTUAL_ENV=/usr/local
 
 RUN pip install uv
 
-RUN uv venv
-RUN source .venv/bin/activate
-RUN uv pip install -r requirements.txt
-RUN uv pip install psycopg2
+RUN python -m uv venv
+RUN python -m uv pip install -r requirements.txt
+RUN python -m uv pip install psycopg2
 
 COPY . .
 
