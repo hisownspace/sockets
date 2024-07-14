@@ -12,7 +12,10 @@ ARG SCHEMA
 ARG SECRET_KEY
 ENV VIRTUAL_ENV=/www/var/venv
 
-RUN pip install uv
+ADD --chmod=755 https://astral.sh/uv/install.sh ./install.sh
+RUN ./install.sh && rm ./install.sh
+
+ENV PATH="/root/.cargo/bin:$PATH"
 
 RUN uv venv $VIRTUAL_ENV
 
