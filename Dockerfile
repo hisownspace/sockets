@@ -10,19 +10,19 @@ ARG DATABASE_URL
 ARG FLASK_ENV
 ARG SCHEMA
 ARG SECRET_KEY
-ENV VIRTUAL_ENV=/www/var/venv
+# ENV VIRTUAL_ENV=/www/var/venv
 
-ADD --chmod=755 https://astral.sh/uv/install.sh ./install.sh
-RUN ./install.sh && rm ./install.sh
+# ADD --chmod=755 https://astral.sh/uv/install.sh ./install.sh
+# RUN ./install.sh && rm ./install.sh
 
-ENV PATH="/root/.cargo/bin:$PATH"
+# ENV PATH="/root/.cargo/bin:$PATH"
 
-RUN uv venv $VIRTUAL_ENV
+# RUN uv venv $VIRTUAL_ENV
 
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN uv pip install -r requirements.txt
-RUN uv pip install psycopg2
+RUN pip install -r requirements.txt
+RUN pip install psycopg2
 
 COPY . .
 
